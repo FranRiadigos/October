@@ -1,0 +1,94 @@
+import com.android.build.gradle.internal.LoggerWrapper
+import com.android.build.gradle.internal.SdkHandler
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'me.tatarka:gradle-retrolambda:3.2.3'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'me.tatarka.retrolambda'
+
+// This is important even if Android Studio claims it isn't
+// used. Android can't interpret Java 8 byte code.
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+configurations {
+    provided
+}
+
+//noinspection GroovyAssignabilityCheck
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+    }
+}
+
+def logger = new LoggerWrapper(project.logger)
+def sdkHandler = new SdkHandler(project, logger)
+for (File file : sdkHandler.sdkLoader.repositories) {
+    project.repositories.maven {
+        url = file.toURI()
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    provided 'com.google.dagger:dagger-compiler:2.1'
+    compile (
+            'com.google.dagger:dagger:2.1',
+            'com.google.android:android:+',
+
+            'com.kuassivi.annotation:repository-cache:1.1.2',
+
+            "io.reactivex:rxjava:1.1.0",
+
+            "com.squareup.okhttp:okhttp:2.5.0",
+            "com.squareup.retrofit2:retrofit:2.0.0-beta3",
+            "com.squareup.retrofit2:converter-gson:2.0.0-beta3",
+            "com.squareup.retrofit2:adapter-rxjava:2.0.0-beta3",
+            "com.squareup.okhttp3:logging-interceptor:3.0.1",
+    )
+}
+
+ext {
+    // Where you will see your artifact in Bintray's web interface
+    // The "bintrayName" should match the name of the Bintray repro.
+    bintrayRepo = 'maven'
+    bintrayName = 'october-core'
+
+    // Maven metadata
+    publishedGroupId = 'com.kuassivi.october'
+    libraryName = 'OctoberCore'
+    // Save yourself a head ache, and set this equal to the name of the Android Studio library
+    // module. The artifact name needs to match the name of the library.
+    artifact = 'october-core'
+
+    libraryDescription = 'Android MVP Framework Core.'
+
+    siteUrl = project.hasProperty('projectWebsite') ? projectWebsite : ''
+    gitUrl = siteUrl + '.git'
+    libraryVersion = project.hasProperty('projectVersionName') ? projectVersionName : '0'
+
+    developerId = project.hasProperty('bintray.user') ? project['bintray.user'] : 'noUser'
+    developerName = project.hasProperty('developerName') ? developerName : 'noName'
+    developerEmail = project.hasProperty('developerEmail') ? developerEmail : 'noEmail'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+
+    mavenPackagin = "pom"
+
+    syncMaven = false
+}
+
+if(localPropExist) {
+    apply from: "${rootDir}/../bintray.gradle"
+    apply from: "${rootDir}/../install.gradle"
+}
