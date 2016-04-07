@@ -69,7 +69,7 @@ ext {
     // module. The artifact name needs to match the name of the library.
     artifact = 'october-core'
 
-    libraryDescription = 'Android MVP Framework Core.'
+    libraryDescription = 'Core features of the October framework.'
 
     siteUrl = project.hasProperty('projectWebsite') ? projectWebsite : ''
     gitUrl = siteUrl + '.git'

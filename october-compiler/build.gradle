@@ -22,13 +22,13 @@ ext {
     bintrayName = 'october-compiler'
 
     // Maven metadata
-    publishedGroupId = 'com.kuassivi.compiler'
+    publishedGroupId = 'com.kuassivi.october'
     libraryName = 'OctoberCompiler'
     // Save yourself a head ache, and set this equal to the name of the Android Studio library
     // module. The artifact name needs to match the name of the library.
     artifact = 'october-compiler'
 
-    libraryDescription = 'Annotation Processor for October Compiler.'
+    libraryDescription = 'Annotations Processor for the October Compiler.'
 
     siteUrl = project.hasProperty('projectWebsite') ? projectWebsite : ''
     gitUrl = siteUrl + '.git'

@@ -16,6 +16,9 @@ buildscript {
 }
 
 allprojects {
+
+    group = 'com.kuassivi'
+
     repositories {
         jcenter()
     }
