@@ -9,12 +9,14 @@ import com.kuassivi.october.di.module.BaseApplicationModule;
 import com.kuassivi.october.di.module.BaseFragmentModule;
 import com.kuassivi.october.mvp.OctoberActivityInterface;
 import com.kuassivi.october.mvp.OctoberFragmentInterface;
+import com.kuassivi.october.util.StringUtils;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
@@ -125,7 +127,7 @@ public class ApplicationGenerator {
 
         MethodSpec.Builder initialize =
                 MethodSpec.methodBuilder(Config.DAGGER_APPLICATION_COMPONENT_METHOD)
-                          .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                          .addModifiers(Modifier.PUBLIC)
                           .addAnnotation(Override.class)
                           .addParameter(ParameterSpec.builder(
                                   ClassName.bestGuess(applicationAnnotatedClass.getQualifiedName()),
@@ -140,10 +142,10 @@ public class ApplicationGenerator {
                                 ClassName.get(pkg_di_component,
                                               Config.OCTOBER_DI_PREFIX
                                               + Config.APPLICATION_COMPONENT),
-                                Utils.uncapitalize(BaseApplicationModule
-                                                           .class.getSimpleName()),
+                                StringUtils.uncapitalize(BaseApplicationModule
+                                                                 .class.getSimpleName()),
                                 ClassName.get(BaseApplicationModule.class),
-                                Utils.uncapitalize(
+                                StringUtils.uncapitalize(
                                         applicationAnnotatedClass
                                                 .getApplicationModuleSimpleTypeName()),
                                 ClassName.bestGuess(
@@ -275,10 +277,14 @@ public class ApplicationGenerator {
                   .endControlFlow()
                   .addCode("$<};\n");
 
+        ParameterizedTypeName componentInterfaceType =
+                ParameterizedTypeName.get(ClassName.get(OctoberComponentInitializer.class),
+                                          ClassName.bestGuess(
+                                                  applicationAnnotatedClass.getQualifiedName()));
+
         TypeSpec.Builder classBuilder =
                 TypeSpec.classBuilder(Config.OCTOBER_CLASS_NAME)
-                        .addSuperinterface(
-                                ClassName.get(OctoberComponentInitializer.class))
+                        .addSuperinterface(componentInterfaceType)
                         .addModifiers(Modifier.PUBLIC)
                         .addMethod(initialize.build());
 
