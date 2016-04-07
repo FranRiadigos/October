@@ -11,7 +11,7 @@ public class October {
     public static void initialize(Application application) {
         //noinspection TryWithIdenticalCatches
         try {
-            Class<?> clazz = Class.forName(Config.OCTOBER_CLASS_NAME);
+            Class<?> clazz = Class.forName(Config.PACKAGE + "." + Config.OCTOBER_DI_NAME);
             OctoberComponentInitializer initializer =
                     (OctoberComponentInitializer) clazz.getConstructor().newInstance();
             //noinspection unchecked

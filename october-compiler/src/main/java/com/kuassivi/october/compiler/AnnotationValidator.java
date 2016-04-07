@@ -12,7 +12,7 @@
  * the License.
  ******************************************************************************/
 
-package com.kuassivi.compiler;
+package com.kuassivi.october.compiler;
 
 import java.lang.annotation.ElementType;
 import java.util.HashSet;

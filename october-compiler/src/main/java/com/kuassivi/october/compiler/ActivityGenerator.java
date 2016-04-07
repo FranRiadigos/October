@@ -1,15 +1,16 @@
-package com.kuassivi.compiler;
+package com.kuassivi.october.compiler;
 
 import com.google.auto.common.SuperficialValidation;
 
 import com.kuassivi.october.Config;
 import com.kuassivi.october.annotation.ActivityComponent;
 import com.kuassivi.october.annotation.FragmentComponent;
-import com.kuassivi.october.annotation.PerFragment;
-import com.kuassivi.october.di.OctoberPresenterFragmentInjectable;
-import com.kuassivi.october.di.component.BaseFragmentComponent;
+import com.kuassivi.october.annotation.PerActivity;
+import com.kuassivi.october.di.OctoberPresenterActivityInjectable;
+import com.kuassivi.october.di.component.BaseActivityComponent;
+import com.kuassivi.october.di.component.internal.BaseHelperActivityComponent;
 import com.kuassivi.october.di.component.internal.BaseHelperFragmentComponent;
-import com.kuassivi.october.di.module.BaseFragmentModule;
+import com.kuassivi.october.di.module.BaseActivityModule;
 import com.kuassivi.october.mvp.contract.Presentable;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -43,21 +44,19 @@ import javax.lang.model.util.Types;
 import dagger.Lazy;
 import dagger.Subcomponent;
 
-public class FragmentGenerator {
+public class ActivityGenerator {
 
+    Map<String, DefaultAnnotatedClass> activityMap;
+    Map<String, String>                presenterMap;
     private Types                     typeUtils;
     private Elements                  elementUtils;
     private Filer                     filer;
     private ApplicationAnnotatedClass applicationAnnotatedClass;
-
     private String pkg_di;
     private String pkg_di_component;
     private String pkg_di_component_helper;
 
-    Map<String, DefaultAnnotatedClass> fragmentMap;
-    Map<String, String> presenterMap;
-
-    public FragmentGenerator(Types typeUtils,
+    public ActivityGenerator(Types typeUtils,
                              Elements elementUtils,
                              Filer filer,
                              ApplicationAnnotatedClass applicationAnnotatedClass) {
@@ -76,29 +75,29 @@ public class FragmentGenerator {
         pkg_di_component = pkg_di + ".component";
         pkg_di_component_helper = pkg_di_component + ".helper";
 
-        fragmentMap = new LinkedHashMap<>();
+        activityMap = new LinkedHashMap<>();
         presenterMap = new LinkedHashMap<>();
     }
 
-    public void process(Set<? extends Element> fragments,
-                        Set<? extends Element> presenterInjectableSet)
+    public void process(Set<? extends Element> activityComponentSet,
+                        Set<? extends Element> perActivitySet)
             throws ProcessingException, IllegalArgumentException, IOException {
 
-        findFragments(fragments);
+        findActivities(activityComponentSet);
 
-        findPresenters(presenterInjectableSet);
+        findPresenters(perActivitySet);
 
         generateCode();
     }
 
-    private void findFragments(Set<? extends Element> fragments)
+    private void findActivities(Set<? extends Element> activityComponentSet)
             throws ProcessingException {
-        for (Element annotatedElement : fragments) {
-            // Check if a Class has been annotated with @OctoberFragment
+        for (Element annotatedElement : activityComponentSet) {
+            // Check if a Class has been annotated with @OctoberActivity
             if (annotatedElement.getKind() != ElementKind.CLASS) {
                 throw new ProcessingException(annotatedElement,
                                               "Only classes can be annotated with @%s",
-                                              FragmentComponent.class.getSimpleName());
+                                              ActivityComponent.class.getSimpleName());
             }
             if (!SuperficialValidation.validateElement(annotatedElement)) {
                 continue;
@@ -106,11 +105,11 @@ public class FragmentGenerator {
             // We can cast it, because we know that it's of ElementKind.CLASS
             TypeElement currentClass = (TypeElement) annotatedElement;
 
-            if(Utils.containsTypeParameters(currentClass)) {
+            if (Utils.containsTypeParameters(currentClass)) {
                 throw new ProcessingException(annotatedElement,
                                               "Classes with Type Parameters cannot be annotated "
                                               + "with @%s",
-                                              FragmentComponent.class.getSimpleName());
+                                              ActivityComponent.class.getSimpleName());
             }
 
             DefaultAnnotatedClass annotatedClass = new DefaultAnnotatedClass(currentClass);
@@ -121,25 +120,24 @@ public class FragmentGenerator {
                     throw new ProcessingException(annotatedClass.getAnnotatedClassElement(),
                                                   "%s must inherits from %s",
                                                   annotatedClass.getSimpleName(),
-                                                  Config.OCTOBER_FRAGMENT_CLASS_SIMPLE_NAME);
+                                                  Config.OCTOBER_ACTIVITY_CLASS_SIMPLE_NAME);
                 }
                 TypeElement superClassElement =
                         (TypeElement) typeUtils.asElement(superClassType);
                 String className = superClassElement.getQualifiedName().toString();
-                if (className.equals(Config.OCTOBER_FRAGMENT_CLASS)) {
-                    DefaultAnnotatedClass storedClass = fragmentMap.get(qualifiedClassName);
+                if (className.equals(Config.OCTOBER_ACTIVITY_CLASS)
+                    || className.equals(Config.OCTOBER_APPCOMPAT_CLASS)) {
+                    DefaultAnnotatedClass storedClass = activityMap.get(qualifiedClassName);
                     if (storedClass == null) {
-                        fragmentMap.put(qualifiedClassName, annotatedClass);
+                        activityMap.put(qualifiedClassName, annotatedClass);
                         Utils.note("Processing class " + annotatedClass.getSimpleName());
                     }
                     break;
-                } else if(className.equals(Config.OCTOBER_ACTIVITY_CLASS)
-                          || className.equals(Config.OCTOBER_APPCOMPAT_CLASS)
-                          || className.equals(Config.OCTOBER_PRESENTER_CLASS)) {
+                } else if (className.equals(Config.OCTOBER_FRAGMENT_CLASS)
+                           || className.equals(Config.OCTOBER_PRESENTER_CLASS)) {
 
-                    String correctAnnotation = className.equals(Config.OCTOBER_ACTIVITY_CLASS)
-                                               || className.equals(Config.OCTOBER_APPCOMPAT_CLASS)
-                                               ? ActivityComponent.class.getSimpleName()
+                    String correctAnnotation = className.equals(Config.OCTOBER_FRAGMENT_CLASS)
+                                               ? FragmentComponent.class.getSimpleName()
                                                : null;
 
                     throw new ProcessingException(annotatedClass.getAnnotatedClassElement(),
@@ -149,27 +147,28 @@ public class FragmentGenerator {
                                                      ? "%1$s class must be annotated with @%4$s"
                                                      : ""),
                                                   annotatedClass.getSimpleName(),
-                                                  FragmentComponent.class.getSimpleName(),
-                                                  Config.OCTOBER_FRAGMENT_CLASS_SIMPLE_NAME,
+                                                  ActivityComponent.class.getSimpleName(),
+                                                  Config.OCTOBER_ACTIVITY_CLASS_SIMPLE_NAME,
                                                   correctAnnotation);
                 }
                 // Moving up in inheritance tree
                 currentClass = (TypeElement) typeUtils.asElement(superClassType);
             }
-            if(fragmentMap.get(qualifiedClassName) == null) {
+            if (activityMap.get(qualifiedClassName) == null) {
                 Utils.warning(annotatedClass.getAnnotatedClassElement(),
                               String.format("Skipped %s.class because is annotated with @%s "
-                                            + "but it doesn't inherits from %s",
+                                            + "but it doesn't inherits from %s or %s",
                                             annotatedClass.getSimpleName(),
-                                            FragmentComponent.class.getSimpleName(),
-                                            Config.OCTOBER_FRAGMENT_CLASS_SIMPLE_NAME));
+                                            ActivityComponent.class.getSimpleName(),
+                                            Config.OCTOBER_ACTIVITY_CLASS_SIMPLE_NAME,
+                                            Config.OCTOBER_APPCOMPAT_CLASS_SIMPLE_NAME));
             }
         }
     }
 
-    private void findPresenters(Set<? extends Element> presenterInjectableSet)
+    private void findPresenters(Set<? extends Element> perActivitySet)
             throws ProcessingException {
-        for (Element annotatedElement : presenterInjectableSet) {
+        for (Element annotatedElement : perActivitySet) {
             if (annotatedElement.getKind() == ElementKind.CLASS) {
                 if (!SuperficialValidation.validateElement(annotatedElement)) {
                     continue;
@@ -177,7 +176,7 @@ public class FragmentGenerator {
                 // We can cast it, because we know that it's of ElementKind.CLASS
                 TypeElement currentPresenter = (TypeElement) annotatedElement;
                 TypeElement currentClass = currentPresenter;
-                if(Utils.inheritsFromClass(currentClass, Config.OCTOBER_PRESENTER_CLASS)) {
+                if (Utils.inheritsFromClass(currentClass, Config.OCTOBER_PRESENTER_CLASS)) {
                     while (true) {
                         TypeMirror superClassType = currentClass.getSuperclass();
                         TypeElement superClassElement =
@@ -214,24 +213,24 @@ public class FragmentGenerator {
 
     private void generateCode() throws IOException {
 
-        createPresenterFragmentInjector();
+        createPresenterActivityInjector();
 
-        createFragmentComponent();
+        createActivityComponent();
 
-        createHelperFragmentComponent();
+        createHelperActivityComponent();
     }
 
-    private void createPresenterFragmentInjector()
+    private void createPresenterActivityInjector()
             throws IOException {
 
-        TypeSpec.Builder presenterFragmentInjectorClassBuilder =
-                TypeSpec.classBuilder(Config.PRESENTER_FRAGMENT_INJECTOR)
+        TypeSpec.Builder presenterActivityInjectorClassBuilder =
+                TypeSpec.classBuilder(Config.PRESENTER_ACTIVITY_INJECTOR)
                         .addModifiers(Modifier.PUBLIC)
-                        .superclass(OctoberPresenterFragmentInjectable.class);
+                        .superclass(OctoberPresenterActivityInjectable.class);
 
         //add Presenter members
         MethodSpec.Builder provideMethod = MethodSpec.overriding(Utils.findFirstElement(
-                OctoberPresenterFragmentInjectable.class, Config.PRESENTER_INJECTOR_METHOD));
+                OctoberPresenterActivityInjectable.class, Config.PRESENTER_INJECTOR_METHOD));
 
         if (!presenterMap.isEmpty()) {
 
@@ -244,7 +243,7 @@ public class FragmentGenerator {
                                 ClassName.get(Lazy.class),
                                 ClassName.bestGuess(element.getValue()));
                 String member = "presenterLazy" + round;
-                presenterFragmentInjectorClassBuilder
+                presenterActivityInjectorClassBuilder
                         .addField(
                                 FieldSpec.builder(memberType, member)
                                          .addAnnotation(Inject.class)
@@ -261,13 +260,13 @@ public class FragmentGenerator {
             provideMethod = provideMethod.addStatement("return null");
         }
 
-        presenterFragmentInjectorClassBuilder.addMethod(provideMethod.build());
+        presenterActivityInjectorClassBuilder.addMethod(provideMethod.build());
 
-        TypeSpec typeSpec = presenterFragmentInjectorClassBuilder.build();
+        TypeSpec typeSpec = presenterActivityInjectorClassBuilder.build();
         JavaFile.builder(pkg_di, typeSpec).build().writeTo(filer);
     }
 
-    private void createFragmentComponent() throws IOException {
+    private void createActivityComponent() throws IOException {
 
         AnnotationSpec daggerSubComponentAnnotation =
                 AnnotationSpec
@@ -275,71 +274,81 @@ public class FragmentGenerator {
                         .addMember("modules",
                                    "{$T.class, $T.class}",
                                    ClassName.bestGuess(
-                                           applicationAnnotatedClass.getFragmentModuleQualifiedClassName()
+                                           applicationAnnotatedClass
+                                                   .getActivityModuleQualifiedClassName()
                                    ),
-                                   ClassName.get(BaseFragmentModule.class))
+                                   ClassName.get(BaseActivityModule.class))
                         .build();
 
-        Collection<DefaultAnnotatedClass> collection = fragmentMap.values();
+        Collection<DefaultAnnotatedClass> collection = activityMap.values();
 
         ParameterizedTypeName baseInherits =
                 ParameterizedTypeName.get(
-                        ClassName.get(BaseFragmentComponent.class),
-                        ClassName.get(pkg_di, Config.PRESENTER_FRAGMENT_INJECTOR));
+                        ClassName.get(BaseActivityComponent.class),
+                        ClassName.get(BaseHelperFragmentComponent.class),
+                        ClassName.get(pkg_di, Config.PRESENTER_ACTIVITY_INJECTOR));
+
+        // helper method
+        MethodSpec.Builder helper =
+                MethodSpec.methodBuilder(Config.HELPER_FRAGMENT_COMPONENT_METHOD)
+                          .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                          .returns(ClassName.get(pkg_di_component_helper,
+                                                 Config.HELPER_FRAGMENT_COMPONENT));
 
         MethodSpec.Builder injectMethod =
                 MethodSpec.methodBuilder(Config.COMPONENT_INJECTOR_METHOD)
                           .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                           .addParameter(ParameterSpec.builder(
                                   ClassName.get(pkg_di,
-                                                Config.PRESENTER_FRAGMENT_INJECTOR),
+                                                Config.PRESENTER_ACTIVITY_INJECTOR),
                                   "injector").build())
                           .returns(TypeName.VOID);
 
         TypeSpec.Builder classBuilder =
-                TypeSpec.interfaceBuilder(Config.FRAGMENT_COMPONENT)
+                TypeSpec.interfaceBuilder(Config.ACTIVITY_COMPONENT)
                         .addModifiers(Modifier.PUBLIC)
-                        .addAnnotation(PerFragment.class)
+                        .addAnnotation(PerActivity.class)
                         .addAnnotation(daggerSubComponentAnnotation)
                         .addSuperinterface(baseInherits)
 
+                        .addMethod(helper.build())
                         .addMethod(injectMethod.build());
 
-        //add rest of injected fragments views
+        //add rest of injected activities views
         for (DefaultAnnotatedClass annotatedClass : collection) {
-            MethodSpec.Builder method =
+            MethodSpec method =
                     MethodSpec.methodBuilder(Config.COMPONENT_INJECTOR_METHOD)
                               .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                               .addParameter(ParameterSpec.builder(
                                       ClassName.bestGuess(annotatedClass.getQualifiedName()),
                                       "view").build())
-                              .returns(TypeName.VOID);
-            classBuilder.addMethod(method.build());
+                              .returns(TypeName.VOID).build();
+            classBuilder.addMethod(method);
         }
 
         TypeSpec typeSpec = classBuilder.build();
         JavaFile.builder(pkg_di_component, typeSpec).build().writeTo(filer);
     }
 
-    private void createHelperFragmentComponent() throws IOException {
+    private void createHelperActivityComponent() throws IOException {
 
         ParameterizedTypeName baseInterface =
                 ParameterizedTypeName.get(
-                        ClassName.get(BaseHelperFragmentComponent.class),
-                        ClassName.get(BaseFragmentComponent.class));
+                        ClassName.get(BaseHelperActivityComponent.class),
+                        ClassName.get(BaseActivityComponent.class));
 
         MethodSpec.Builder applyMethod =
                 MethodSpec.methodBuilder(Config.HELPER_COMPONENT_METHOD)
                           .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                           .addParameter(ParameterSpec.builder(
-                                  ClassName.get(BaseFragmentModule.class), "module").build())
+                                  ClassName.get(BaseActivityModule.class), "module").build())
                           .returns(ClassName.get(pkg_di_component,
-                                                 Config.FRAGMENT_COMPONENT));
+                                                 Config.ACTIVITY_COMPONENT));
 
         TypeSpec.Builder classBuilder =
-                TypeSpec.interfaceBuilder(Config.HELPER_FRAGMENT_COMPONENT)
+                TypeSpec.interfaceBuilder(Config.HELPER_ACTIVITY_COMPONENT)
                         .addModifiers(Modifier.PUBLIC)
-                        .addAnnotation(PerFragment.class)
+                        .addAnnotation(PerActivity.class)
                         .addAnnotation(AnnotationSpec
                                                .builder(Subcomponent.class)
                                                .build())
@@ -351,8 +360,8 @@ public class FragmentGenerator {
         JavaFile.builder(pkg_di_component_helper, typeSpec).build().writeTo(filer);
     }
 
-    public Map<String, DefaultAnnotatedClass> getFragmentMap() {
-        return fragmentMap;
+    public Map<String, DefaultAnnotatedClass> getActivityMap() {
+        return activityMap;
     }
 
     public Map<String, String> getPresenterMap() {

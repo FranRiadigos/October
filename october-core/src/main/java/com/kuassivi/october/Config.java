@@ -4,10 +4,12 @@ import com.kuassivi.october.util.StringUtils;
 
 public interface Config {
 
+    String PACKAGE = Config.class.getPackage().getName();
+
     String MVP_CLASS_PATTERN = ".*(\\.mvp.*)";
 
-    String OCTOBER_DI_PREFIX  = "Dagger";
-    String OCTOBER_CLASS_NAME = "October" + OCTOBER_DI_PREFIX;
+    String OCTOBER_DI_PREFIX = "Dagger";
+    String OCTOBER_DI_NAME   = "October" + OCTOBER_DI_PREFIX;
 
     String OCTOBER_ACTIVITY_CLASS              = "com.kuassivi.october.mvp.OctoberActivity";
     String OCTOBER_ACTIVITY_CLASS_SIMPLE_NAME  = OCTOBER_ACTIVITY_CLASS

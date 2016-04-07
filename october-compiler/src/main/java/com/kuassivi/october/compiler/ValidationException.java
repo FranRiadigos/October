@@ -14,23 +14,27 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.kuassivi.compiler;
+package com.kuassivi.october.compiler;
+
+import java.util.Set;
 
 import javax.lang.model.element.Element;
 
-/**
- * @author Hannes Dorfmann
- */
-public class ProcessingException extends Exception {
+public class ValidationException extends Exception {
 
+    Set<String> messages;
     Element element;
 
-    public ProcessingException(Element element, String msg, Object... args) {
-        super(String.format(msg, args));
+    public ValidationException(Element element, Set<String> messages) {
         this.element = element;
+        this.messages = messages;
     }
 
     public Element getElement() {
         return element;
+    }
+
+    public Set<String> getMessages() {
+        return messages;
     }
 }

@@ -1,4 +1,4 @@
-package com.kuassivi.compiler;
+package com.kuassivi.october.compiler;
 
 import com.kuassivi.october.Config;
 import com.kuassivi.october.OctoberComponent;
@@ -283,12 +283,12 @@ public class ApplicationGenerator {
                                                   applicationAnnotatedClass.getQualifiedName()));
 
         TypeSpec.Builder classBuilder =
-                TypeSpec.classBuilder(Config.OCTOBER_CLASS_NAME)
+                TypeSpec.classBuilder(Config.OCTOBER_DI_NAME)
                         .addSuperinterface(componentInterfaceType)
                         .addModifiers(Modifier.PUBLIC)
                         .addMethod(initialize.build());
 
         TypeSpec typeSpec = classBuilder.build();
-        JavaFile.builder(pkg_di_component, typeSpec).build().writeTo(filer);
+        JavaFile.builder(Config.PACKAGE, typeSpec).build().writeTo(filer);
     }
 }

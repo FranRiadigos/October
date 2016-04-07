@@ -1,4 +1,4 @@
-package com.kuassivi.compiler;
+package com.kuassivi.october.compiler;
 
 import com.kuassivi.october.annotation.ApplicationComponent;
 

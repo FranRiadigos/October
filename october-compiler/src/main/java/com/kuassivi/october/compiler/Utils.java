@@ -12,7 +12,7 @@
  * the License.
  ******************************************************************************/
 
-package com.kuassivi.compiler;
+package com.kuassivi.october.compiler;
 
 import java.util.List;
 import java.util.Set;

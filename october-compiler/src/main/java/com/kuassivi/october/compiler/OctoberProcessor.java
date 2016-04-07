@@ -1,4 +1,4 @@
-package com.kuassivi.compiler;
+package com.kuassivi.october.compiler;
 
 import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
