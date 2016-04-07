@@ -46,22 +46,23 @@ proguard/
 # Espresso 
 *.esproj
 
-# Intellij IDEA (see https://intellij-support.jetbrains.com/entries/23393067)
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/datasources.xml
-.idea/dataSources.ids
-
 # Android Studio and Intellij and Android in general
 android/libs/armeabi/
 android/libs/armeabi-v7a/
 android/libs/x86/
 android/gen/
-.idea/
+/*/.idea
+/.idea
 *.ipr
 *.iws
 *.iml
 out/
+
+# Intellij IDEA (see https://intellij-support.jetbrains.com/entries/23393067)
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/datasources.xml
+.idea/dataSources.ids
 
 
 ################################################
