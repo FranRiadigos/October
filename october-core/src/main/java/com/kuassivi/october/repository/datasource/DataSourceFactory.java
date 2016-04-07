@@ -25,7 +25,7 @@ import rx.Observable;
  *            of your DataSource.
  *            <p>
  *            When you call {@link DataSourceFactory#createService(RepositoryProxyCache)} it should
- *            return an object that complies with this T parameter.
+ *            return an object that complies with this &lt;T&gt; parameter.
  */
 public interface DataSourceFactory<T> {
 
@@ -52,20 +52,6 @@ public interface DataSourceFactory<T> {
      * Creates a Data Strategy Service which should return always a Local DataSource.
      */
     T createLocalService();
-
-//    /**
-//     * Sets the Cloud DataSource to be accessed through {@link #createCloudService()}.
-//     *
-//     * @param cloudDataSource the Cloud DataSource instance
-//     */
-//    void setCloudDataSource(T cloudDataSource);
-//
-//    /**
-//     * Sets the Local DataSource to be accessed through {@link #createLocalService()}.
-//     *
-//     * @param localDataSource the Local DataSource instance
-//     */
-//    void setLocalDataSource(T localDataSource);
 
     /**
      * Builder of the Data Service Factory

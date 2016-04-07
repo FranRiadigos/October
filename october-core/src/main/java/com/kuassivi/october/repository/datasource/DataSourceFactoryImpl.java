@@ -111,7 +111,7 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
      */
     private void checkNonNullCloudDataSources() {
         if(this.cloudDataSource == null) {
-            throw new NullPointerException("Null Cloud DataSource in DataSourceFactory");
+            throw new NullPointerException("Null Cloud DataSource in DataSourceFactoryImpl");
         }
     }
 
@@ -120,7 +120,7 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
      */
     private void checkNonNullLocalDataSources() {
         if(this.localDataSource == null) {
-            throw new NullPointerException("Null Local DataSource in DataSourceFactory");
+            throw new NullPointerException("Null Local DataSource in DataSourceFactoryImpl");
         }
     }
 }
