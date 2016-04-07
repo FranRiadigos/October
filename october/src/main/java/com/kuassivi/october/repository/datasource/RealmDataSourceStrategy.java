@@ -14,7 +14,7 @@ import rx.functions.Action0;
  * It also provides an utility method to create, update and/or clear specific Realm objects
  * synchronously through the {@link #createOrUpdate(Object, Class[])} method.
  */
-public abstract class RealmDataSourceStrategy extends DataSourceStrategy {
+abstract class RealmDataSourceStrategy extends DataSourceStrategy {
 
     /**
      * We cannot Inject Realm with dagger, due to the access thread confinement.

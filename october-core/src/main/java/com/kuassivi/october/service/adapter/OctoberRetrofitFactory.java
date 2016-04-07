@@ -13,7 +13,7 @@ public abstract class OctoberRetrofitFactory {
     private Retrofit retrofit;
     private String apiUrl;
 
-    final protected <S> S create(Class<S> service) {
+    final public <S> S create(Class<S> service) {
         return build().create(service);
     }
 

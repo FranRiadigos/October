@@ -53,19 +53,19 @@ public interface DataSourceFactory<T> {
      */
     T createLocalService();
 
-    /**
-     * Sets the Cloud DataSource to be accessed through {@link #createCloudService()}.
-     *
-     * @param cloudDataSource the Cloud DataSource instance
-     */
-    void setCloudDataSource(T cloudDataSource);
-
-    /**
-     * Sets the Local DataSource to be accessed through {@link #createLocalService()}.
-     *
-     * @param localDataSource the Local DataSource instance
-     */
-    void setLocalDataSource(T localDataSource);
+//    /**
+//     * Sets the Cloud DataSource to be accessed through {@link #createCloudService()}.
+//     *
+//     * @param cloudDataSource the Cloud DataSource instance
+//     */
+//    void setCloudDataSource(T cloudDataSource);
+//
+//    /**
+//     * Sets the Local DataSource to be accessed through {@link #createLocalService()}.
+//     *
+//     * @param localDataSource the Local DataSource instance
+//     */
+//    void setLocalDataSource(T localDataSource);
 
     /**
      * Builder of the Data Service Factory

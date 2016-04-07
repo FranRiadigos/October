@@ -23,10 +23,16 @@ import com.kuassivi.annotation.RepositoryProxyCache;
  */
 public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements DataSourceFactory<T> {
 
-    private T cloudDataSource;
-    private T localDataSource;
+    private ICloudDataSource cloudDataSource;
+    private ILocalDataSource localDataSource;
 
     private DataSourceFactory.Builder<T> builder;
+
+    public <C extends ICloudDataSource, L extends ILocalDataSource>
+        DataSourceFactoryImpl(C cloudDataSource, L localDataSource) {
+        this.cloudDataSource = cloudDataSource;
+        this.localDataSource = localDataSource;
+    }
 
     /**
      * {@inheritDoc}
@@ -35,22 +41,6 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
     public DataSourceFactory<T> attach(Builder<T> builder) {
         this.builder = builder;
         return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final public void setCloudDataSource(T cloudDataSource) {
-        this.cloudDataSource = cloudDataSource;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final public void setLocalDataSource(T localDataSource) {
-        this.localDataSource = localDataSource;
     }
 
     /**
@@ -67,11 +57,11 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
         checkNonNullDataSources();
 
         if (!cache.isExpired()) {
-            dataSourceStrategy = this.localDataSource;
-            dataSourceStrategy.setIsCloudDataSource(false);
+            //noinspection unchecked
+            dataSourceStrategy = (T) this.localDataSource;
         } else {
-            dataSourceStrategy = this.cloudDataSource;
-            dataSourceStrategy.setIsCloudDataSource(true);
+            //noinspection unchecked
+            dataSourceStrategy = (T) this.cloudDataSource;
             dataSourceStrategy.attachCache(cache);
         }
 
@@ -88,9 +78,10 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
     @Override
     final public T createCloudService() {
         checkNonNullCloudDataSources();
-        this.cloudDataSource.setIsCloudDataSource(true);
-        builder.attach(this.cloudDataSource);
-        return this.cloudDataSource;
+        //noinspection unchecked
+        builder.attach((T)this.cloudDataSource);
+        //noinspection unchecked
+        return (T) this.cloudDataSource;
     }
 
     /**
@@ -101,13 +92,14 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
     @Override
     final public T createLocalService() {
         checkNonNullLocalDataSources();
-        this.cloudDataSource.setIsCloudDataSource(false);
-        builder.attach(this.localDataSource);
-        return this.localDataSource;
+        //noinspection unchecked
+        builder.attach((T)this.localDataSource);
+        //noinspection unchecked
+        return (T) this.localDataSource;
     }
 
     /**
-     * Checks for data sources to be set
+     * Checks for Data Sources to be set
      */
     private void checkNonNullDataSources() {
         checkNonNullCloudDataSources();
@@ -115,7 +107,7 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
     }
 
     /**
-     * Checks for Cloud Data source to be set
+     * Checks for a Cloud Data Source to be set
      */
     private void checkNonNullCloudDataSources() {
         if(this.cloudDataSource == null) {
@@ -124,7 +116,7 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
     }
 
     /**
-     * Checks for Local Data source to be set
+     * Checks for a Local Data Source to be set
      */
     private void checkNonNullLocalDataSources() {
         if(this.localDataSource == null) {
