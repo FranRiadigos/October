@@ -7,13 +7,13 @@ dependencies:
     - ~/.android
 
   pre:
-    - echo y | android update sdk --no-ui --all --filter "extra,tools,platform-tools,android-23"
+    - echo y | android update sdk --no-ui --all --filter "tools,extra-android-m2repository,extra-android-support,platform-tools,android-23"
     - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.3"
 
 test:
   override:
     - echo "Running JUnit tests!"
-    - ./gradlew clean build test -PdisablePreDex
+    - ./gradlew clean build check test -PdisablePreDex
 
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
