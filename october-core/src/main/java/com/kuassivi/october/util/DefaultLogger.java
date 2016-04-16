@@ -1,17 +1,22 @@
 package com.kuassivi.october.util;
 
-
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
 /**
- * Custom logger that avoids to show Log messages in Production environment!
+ * Abstract logger class that helps your to implement an Custom Error Logger.
+ * <p>
+ * Maybe you can avoid to show Log messages in Production Environment, performing your logic
+ * through the {@link #processLog(int, String, String, Throwable)} method.
+ * <p>
+ * {@inheritDoc}
  */
 public abstract class DefaultLogger implements ILogger {
 
-    private static final String TRACKING_TAG = "TRACKING";
-    private static final String TRACKING_METHOD = "track";
-    private static final String JAVA_EXTENSION_FILE = ".java";
+    private static final String TRACKING_TAG            = "TRACKING";
+    private static final String TRACKING_METHOD         = "track";
+    private static final String JAVA_EXTENSION_FILE     = ".java";
     private static final String TRACKING_METHOD_PATTERN = "^\\w+\\(\\)\\s*\\-\\>\\s*(.*)";
 
     protected String projectPackage;
@@ -78,7 +83,7 @@ public abstract class DefaultLogger implements ILogger {
 
     @Override
     public void track(String tag, String msg) {
-        Log.i(tag, getStackInfo(msg));
+        processLog(Log.INFO, tag, getStackInfo(msg), null);
     }
 
     @Override
@@ -93,13 +98,13 @@ public abstract class DefaultLogger implements ILogger {
         boolean isTraceMethod = false;
         for (StackTraceElement e : stacktrace) {
             if (e.getClassName().equals(DefaultLogger.class.getName())
-                    && TextUtils.equals(e.getMethodName(), TRACKING_METHOD)) {
+                && TextUtils.equals(e.getMethodName(), TRACKING_METHOD)) {
                 isTraceMethod = true;
             } else if (isTraceMethod) {
                 if (e.getClassName().contains(projectPackage)) {
                     if (e.getMethodName().equals(method)
-                            || e.getMethodName().equals(lastMethod)
-                            || lastMethod.equals(method)) {
+                        || e.getMethodName().equals(lastMethod)
+                        || lastMethod.equals(method)) {
                         trace = trace.replaceFirst(TRACKING_METHOD_PATTERN, "$1");
                     }
                     String currentClassName = e.getFileName().replace(JAVA_EXTENSION_FILE, "");
@@ -107,8 +112,10 @@ public abstract class DefaultLogger implements ILogger {
                         continue;
                     }
                     lastClassName = currentClassName;
-                    trace = (!e.getMethodName().equals(method) ? e.getMethodName()
-                            + "() -> " : "")
+                    trace = (!e.getMethodName().equals(method)
+                             ? e.getMethodName()
+                               + "() -> "
+                             : "")
                             + "[" + lastClassName + "] -> "
                             + trace;
                     if (lastMethod.isEmpty()) {
@@ -122,8 +129,11 @@ public abstract class DefaultLogger implements ILogger {
         }
         trace = trace.replaceFirst(TRACKING_METHOD_PATTERN, "$1") + lastMethod + "()";
 
-        return trace + (msg != null ? ": " + msg : "");
+        return trace + (msg != null
+                        ? ": " + msg
+                        : "");
     }
 
-    public abstract void processLog(int priority, String tag, String msg, Throwable e);
+    public abstract void processLog(int priority, @Nullable String tag, @Nullable String msg,
+                                    @Nullable Throwable e);
 }

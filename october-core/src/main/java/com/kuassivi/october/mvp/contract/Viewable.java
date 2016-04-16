@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2016 Francisco Gonzalez-Armijo Riádigos
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,13 +35,13 @@ public interface Viewable {
     void setTitle(@NonNull CharSequence msg);
 
     /**
-     * Every Viewable must to be notified the Presenter is ready
+     * Every Viewable must be notified when the Presenter is ready
      */
     void onPresenterReady();
 
     /**
-     * Every Viewable must to check whether it is alive
-     * <br>
+     * Every Viewable must check whether it is alive
+     *
      * @return boolean
      */
     boolean isAlive();
@@ -85,5 +85,4 @@ public interface Viewable {
      * Every Viewable must implement one hide loading feature
      */
     void hideLoading();
-
 }

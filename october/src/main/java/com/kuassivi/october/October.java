@@ -4,33 +4,36 @@ import com.kuassivi.october.annotation.ApplicationComponent;
 
 import android.app.Application;
 
-import java.lang.reflect.InvocationTargetException;
-
+/**
+ * Main class who initialize the October Framework.
+ * Remember to create before all dependency module files as specified in the web manuals.
+ * <p>
+ * <b>Usage:</b> Add the @{@link ApplicationComponent} annotation on your {@link Application}
+ * class and initialize the October Framework as follow:
+ * <pre>
+ * <code>public void onCreate() {
+ *   super.onCreate();
+ *   October.initialize(this);
+ * }
+ * </code>
+ * </pre>
+ */
 public class October {
 
     private static OctoberComponent component;
 
     public static void initialize(Application application) {
-        //noinspection ReflectionForUnavailableAnnotation
-        if (!application.getClass().isAnnotationPresent(ApplicationComponent.class)) {
-            throw new RuntimeException(String.format("%s class is not annotated with @%s",
-                                                     application.getClass().getSimpleName(),
-                                                     ApplicationComponent.class.getSimpleName()));
-        }
-
         //noinspection TryWithIdenticalCatches
         try {
-            Class<?> clazz = Class.forName(Config.OCTOBER_CLASS_NAME);
+            Class<?> clazz = Class.forName(Config.PACKAGE + "." + Config.OCTOBER_DI_NAME);
             OctoberComponentInitializer initializer =
                     (OctoberComponentInitializer) clazz.getConstructor().newInstance();
+            //noinspection unchecked
             component = initializer.initialize(application);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Something unexpected was happened. "
-                                       + "Please, try again and rebuild your project.");
-        } catch (InvocationTargetException ignored) {
-        } catch (NoSuchMethodException ignored) {
-        } catch (InstantiationException ignored) {
-        } catch (IllegalAccessException ignored) {
+                                       + "Please, rebuild your project and try again.");
+        } catch (Exception ignored) {
         }
     }
 

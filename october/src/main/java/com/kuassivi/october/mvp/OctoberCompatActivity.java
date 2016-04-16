@@ -10,6 +10,7 @@ import com.kuassivi.october.exception.OctoberException;
 import com.kuassivi.october.mvp.contract.Presentable;
 import com.kuassivi.october.mvp.contract.Viewable;
 import com.kuassivi.october.util.MethodLooper;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +36,7 @@ import dagger.Lazy;
  *
  * @param <P> The Presenter interface reference
  */
-public abstract class OctoberCompatActivity<P extends Presentable> extends AppCompatActivity
+public abstract class OctoberCompatActivity<P extends Presentable> extends RxAppCompatActivity
         implements Viewable, Presentable.OnAttachListener<P>, OctoberActivityInterface {
 
     /**

@@ -6,9 +6,11 @@
  * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
- * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
+ * or implied. See the License for the specific language governing permissions and limitations
+ * under
  * the License.
  ******************************************************************************/
 
@@ -19,7 +21,7 @@ import com.kuassivi.october.exception.OctoberException;
 import rx.functions.Action1;
 
 /**
- * Default subscriber to be used whenever you want default error handling.
+ * Default subscriber to be used whenever you want default onError or onNext handling.
  */
 public abstract class OctoberSubscriber<T> extends rx.Subscriber<T> {
 
@@ -51,7 +53,7 @@ public abstract class OctoberSubscriber<T> extends rx.Subscriber<T> {
      * <p>
      * Useful for lambdas purposes.
      * <p>
-     * You can access the specific IO Exception through the {@link OctoberException#getCause()}
+     * You can access the specific Exception through the {@link OctoberException#getCause()}
      * method.
      *
      * @param action Action to perform onError
@@ -95,7 +97,7 @@ public abstract class OctoberSubscriber<T> extends rx.Subscriber<T> {
     /**
      * It wraps the current Exception into an {@link OctoberException}.
      * <p>
-     * You can access the specific IO Exception through the {@link OctoberException#getCause()}
+     * You can access the specific Exception through the {@link OctoberException#getCause()}
      * method.
      *
      * @param e {@link OctoberException}

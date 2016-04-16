@@ -6,9 +6,11 @@
  * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
- * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
+ * or implied. See the License for the specific language governing permissions and limitations
+ * under
  * the License.
  ******************************************************************************/
 
@@ -22,16 +24,18 @@ import android.support.annotation.NonNull;
 public interface Presentable<V extends Viewable> {
 
     /**
-     * Every Presentable must implement onCreate state
-     * <br><b><font color="red">Caution:</font></b>
-     * There is no Viewable or Context reference yet!
+     * Every Presentable must implement onCreate state.
+     * <p>
+     * <b><font style="color:red">Caution:</font></b>
+     * There is no View reference yet!
      */
     void onCreate();
 
     /**
-     * Every Presentable must implement onViewCreated state
-     * <br><b><font color="green">Notice:</font></b>
-     * Viewable and Context already exist
+     * Every Presentable must implement onViewCreated state.
+     * <p>
+     * <b><font style="color:green">Notice:</font></b>
+     * View reference has been attached.
      */
     void onViewCreated();
 
@@ -52,7 +56,7 @@ public interface Presentable<V extends Viewable> {
 
     /**
      * Every Presentable must attach a Viewable
-     * <br>
+     *
      * @param viewable Viewable
      */
     void attachView(@NonNull Viewable viewable);
@@ -64,18 +68,16 @@ public interface Presentable<V extends Viewable> {
 
     /**
      * Every Presentable must be able to access to its attached View
-     * <br>
+     *
      * @return V Viewable
      */
     V getView();
 
     /**
-     * Presenter helper method.
-     * <br>
-     * Override on your own Presenter.
-     * <br>
+     * Presenter helper method. Override on your own Presenter.
+     * <p>
      * Call Presenter#doProcess(Object) to perform some process outside of the current View.
-     * <br>
+     * <p>
      * For instance, you might need to perform a specific process from your Activity
      * or from a different Class without knowing which Presenter is.
      *
@@ -85,7 +87,7 @@ public interface Presentable<V extends Viewable> {
 
     /**
      * Interface to notify one listener when the Presenter is attached or detached.
-     * <br>
+     * <p>
      * This is useful to notify the Presenter instance in your Activity.
      */
     interface OnAttachListener<P extends Presentable> {

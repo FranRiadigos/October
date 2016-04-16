@@ -9,7 +9,16 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/examples" />
+            <option value="$PROJECT_DIR$/october" />
+            <option value="$PROJECT_DIR$/october-compiler" />
+            <option value="$PROJECT_DIR$/october-core" />
+          </set>
+        </option>
+        <option name="myModules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/examples" />
             <option value="$PROJECT_DIR$/october" />
             <option value="$PROJECT_DIR$/october-compiler" />
             <option value="$PROJECT_DIR$/october-core" />

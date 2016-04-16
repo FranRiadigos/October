@@ -8,13 +8,13 @@ import com.kuassivi.october.di.module.BaseFragmentModule;
 import com.kuassivi.october.mvp.contract.Presentable;
 import com.kuassivi.october.mvp.contract.Viewable;
 import com.kuassivi.october.util.MethodLooper;
+import com.trello.rxlifecycle.components.support.RxFragment;
 
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +34,7 @@ import dagger.Lazy;
  *
  * @param <P> The Presenter interface reference
  */
-public abstract class OctoberFragment<P extends Presentable> extends Fragment
+public abstract class OctoberFragment<P extends Presentable> extends RxFragment
         implements Viewable, Presentable.OnAttachListener<P>, OctoberFragmentInterface {
 
     /**

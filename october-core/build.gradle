@@ -4,6 +4,7 @@ import com.android.build.gradle.internal.SdkHandler
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
     dependencies {
         classpath 'me.tatarka:gradle-retrolambda:3.2.3'
@@ -41,13 +42,10 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     provided 'com.google.dagger:dagger-compiler:2.1'
     compile (
-            'com.google.dagger:dagger:2.1',
-            'com.google.android:android:+',
-
-            'com.kuassivi.annotation:repository-cache:1.1.2',
-
+            "com.google.dagger:dagger:2.1",
+            "com.google.android:android:4.1.1.4",
+            "com.kuassivi.annotation:repository-cache:1.1.2",
             "io.reactivex:rxjava:1.1.0",
-
             "com.squareup.okhttp:okhttp:2.5.0",
             "com.squareup.retrofit2:retrofit:2.0.0-beta3",
             "com.squareup.retrofit2:converter-gson:2.0.0-beta3",
@@ -57,19 +55,16 @@ dependencies {
 }
 
 ext {
-    // Where you will see your artifact in Bintray's web interface
-    // The "bintrayName" should match the name of the Bintray repro.
+    // Bintray metadata
     bintrayRepo = 'maven'
     bintrayName = 'october-core'
 
     // Maven metadata
     publishedGroupId = 'com.kuassivi.october'
     libraryName = 'OctoberCore'
-    // Save yourself a head ache, and set this equal to the name of the Android Studio library
-    // module. The artifact name needs to match the name of the library.
     artifact = 'october-core'
 
-    libraryDescription = 'Android MVP Framework Core.'
+    libraryDescription = 'Core features of the October framework.'
 
     siteUrl = project.hasProperty('projectWebsite') ? projectWebsite : ''
     gitUrl = siteUrl + '.git'
@@ -85,10 +80,10 @@ ext {
 
     mavenPackagin = "pom"
 
-    syncMaven = false
+    syncMaven = true
 }
 
-if(localPropExist) {
+if(localPropExists) {
     apply from: "${rootDir}/../bintray.gradle"
     apply from: "${rootDir}/../install.gradle"
 }

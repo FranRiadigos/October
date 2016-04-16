@@ -15,9 +15,8 @@ import rx.Observable;
  *
  * @param <T> It is a contract interface that specifies all operations of your DataSource.
  *            <p>
- *            You get this type when you call <i>T getDataSourceFactory().createService(Cache)</i>
- *            <p>
- *            See more on {@link DataSourceFactory<T>}
+ *            You get this type when you call <i>getDataSourceFactory().createService(Cache)</i>
+ * @see DataSourceFactory
  * @see DataSourceFactory.Builder#build(Observable)
  */
 public abstract class OctoberRepository<T> implements DataSourceFactory.Builder<T> {
@@ -49,6 +48,6 @@ public abstract class OctoberRepository<T> implements DataSourceFactory.Builder<
      */
     @Override
     final public <E> Observable<E> build(Observable<E> observable) {
-        return ((DataSourceStrategy) this.dataSourceStrategy).build(observable);
+        return ((DataSourceStrategy) this.dataSourceStrategy).delegate(observable);
     }
 }

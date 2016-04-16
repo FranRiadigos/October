@@ -8,51 +8,65 @@ import rx.Observable;
 import rx.functions.Action0;
 
 /**
- * Realm specific Data Source Strategy class that starts and closes a Realm instance in the same
- * Thread and observable is subscribed.
+ * {@link Realm} specific DataSource strategy class that starts and closes a {@link Realm} instance
+ * in the same {@link Thread} when an {@link Observable} is subscribed.
  * <p>
- * It also provides an utility method to create, update and/or clear specific Realm objects
- * synchronously through the {@link #createOrUpdate(Object, Class[])} method.
+ * It also provides an utility method to create, update and/or clear specific {@link Realm} objects
+ * <b>synchronously</b> through the {@link #createOrUpdate(Object, Class[])} method.
+ * <p>
+ * <b>Note:</b> Whenever you inherits from this class and planning to work with the current {@link
+ * Realm} instance, you must {@link #delegate(Observable)} your upstream {@link Observable}.
  */
-public abstract class RealmDataSourceStrategy extends DataSourceStrategy {
+abstract class RealmDataSourceStrategy extends DataSourceStrategy {
 
     /**
-     * We cannot Inject Realm with dagger, due to the access thread confinement.
+     * We cannot Inject {@link Realm} with dagger, due to the access thread confinement.
      * <p>
-     * Let {@link #startRealm} to instantiate Realm in each subscription.
+     * Let {@link #startRealm} to instantiate {@link Realm} in each subscription.
      */
     private Realm realm;
 
     /**
-     * Starts the Realm instance when the Observable subscribes.
+     * Starts the {@link Realm} instance when the {@link Observable} subscribes.
      */
-    private final Action0 startRealm = () -> {
-        if (this.realm == null || this.realm.isClosed()) {
-            this.realm = Realm.getDefaultInstance();
+    private final Action0 startRealm = new Action0() {
+        @Override
+        public void call() {
+            if (realm == null || realm.isClosed()) {
+                realm = Realm.getDefaultInstance();
+                realm.refresh(); // Fix
+            }
         }
     };
 
     /**
-     * Closes the Realm instance when the Observable terminates.
+     * Closes the {@link Realm} instance when the {@link Observable} terminates.
      */
-    private final Action0 stopRealm = () -> {
-        if (this.realm != null && !this.realm.isClosed()) {
-            this.realm.close();
-            this.realm = null;
+    private final Action0 stopRealm = new Action0() {
+        @Override
+        public void call() {
+            if (realm != null && !realm.isClosed()) {
+                realm.close();
+                realm = null;
+            }
         }
     };
 
     /**
-     * Manages the Realm instance.
+     * Manages the {@link Realm} instance.
      * <p>
      * {@inheritDoc}
      */
     @Override
     <T> Observable<T> compose(Observable<T> observable) {
-        return observable.compose(
-                observable1 -> observable1
+        return observable.compose(new Observable.Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> tObservable) {
+                return tObservable
                         .doOnSubscribe(startRealm)
-                        .doOnTerminate(stopRealm));
+                        .doOnTerminate(stopRealm);
+            }
+        });
     }
 
     /**
@@ -63,7 +77,7 @@ public abstract class RealmDataSourceStrategy extends DataSourceStrategy {
      * class.
      *
      * @param entity     {@link RealmObject} or {@link io.realm.RealmList}
-     * @param clearFirst Optional {@link RealmObject} to be cleared
+     * @param clearFirst Optional {@link RealmObject}s to be cleared
      * @param <T>        {@link RealmObject} or {@link io.realm.RealmList}
      * @param <B>        {@link RealmObject}
      */
@@ -72,29 +86,32 @@ public abstract class RealmDataSourceStrategy extends DataSourceStrategy {
                                                                 Class<B>... clearFirst) {
         if (entity != null) {
             this.realm.executeTransaction(
-                    realmInstance -> {
-                        if (clearFirst != null
-                            && clearFirst.length > 0
-                            && isAbleToClear(entity)) {
-                            for (Class<B> clazz : clearFirst) {
-                                realmInstance.clear(clazz);
+                    new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realmInstance) {
+                            if (clearFirst != null
+                                && clearFirst.length > 0
+                                && RealmDataSourceStrategy.this.isAbleToClear(entity)) {
+                                for (Class<B> clazz : clearFirst) {
+                                    realmInstance.clear(clazz);
+                                }
                             }
-                        }
-                        if (entity instanceof RealmObject) {
-                            realmInstance.copyToRealmOrUpdate((RealmObject) entity);
-                        } else if (hasCollectionItems(entity)) {
-                            realmInstance.copyToRealmOrUpdate((Collection) entity);
+                            if (entity instanceof RealmObject) {
+                                realmInstance.copyToRealmOrUpdate((RealmObject) entity);
+                            } else if (RealmDataSourceStrategy.this.hasCollectionItems(entity)) {
+                                realmInstance.copyToRealmOrUpdate((Collection) entity);
+                            }
                         }
                     });
         }
     }
 
     /**
-     * Checks whether is able to clear all entities on the Realm database.
+     * Checks whether is able to clear all entities on the {@link Realm} database.
      *
      * @param entity {@link RealmObject} or {@link io.realm.RealmList}
      * @param <T>    {@link RealmObject} or {@link io.realm.RealmList}
-     * @return true if is able to clear all entities on the Realm database, false otherwise
+     * @return true if is able to clear all entities on the {@link Realm} database, false otherwise
      */
     private <T> boolean isAbleToClear(T entity) {
         return (entity instanceof RealmObject)
@@ -102,7 +119,7 @@ public abstract class RealmDataSourceStrategy extends DataSourceStrategy {
     }
 
     /**
-     * Checks whether is a Collection and if it's not empty
+     * Checks whether is a Collection and if it's not empty.
      *
      * @param entity {@link RealmObject} or {@link io.realm.RealmList}
      * @param <T>    {@link RealmObject} or {@link io.realm.RealmList}
@@ -114,9 +131,9 @@ public abstract class RealmDataSourceStrategy extends DataSourceStrategy {
     }
 
     /**
-     * Returns the current Realm instance for the current Thread execution.
+     * Returns the current {@link Realm} instance for the current Thread execution.
      *
-     * @return The current Realm instance
+     * @return The current {@link Realm} instance
      */
     final public Realm getRealm() {
         return realm;

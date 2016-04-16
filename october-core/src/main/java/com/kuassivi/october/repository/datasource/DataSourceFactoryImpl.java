@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2016 Francisco Gonzalez-Armijo Riádigos
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,14 +19,31 @@ package com.kuassivi.october.repository.datasource;
 import com.kuassivi.annotation.RepositoryProxyCache;
 
 /**
- * Creates a DataSource Factory that can manage a Cache
+ * Creates a DataSource Factory that can manage a Cache.
  */
 public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements DataSourceFactory<T> {
 
-    private T cloudDataSource;
-    private T localDataSource;
+    private ICloudDataSource cloudDataSource;
+    private ILocalDataSource localDataSource;
 
     private DataSourceFactory.Builder<T> builder;
+
+    /**
+     * You must pass each DataSource implementation instances.
+     * <p>
+     * Sometimes you may not need to pass a specific DataSource, because you don´t need it, that is
+     * fine.
+     *
+     * @param cloudDataSource Cloud DataSource instance
+     * @param localDataSource Local DataSource instance
+     * @param <C>             ICloudDataSource
+     * @param <L>             ILocalDataSource
+     */
+    public <C extends ICloudDataSource, L extends ILocalDataSource>
+    DataSourceFactoryImpl(C cloudDataSource, L localDataSource) {
+        this.cloudDataSource = cloudDataSource;
+        this.localDataSource = localDataSource;
+    }
 
     /**
      * {@inheritDoc}
@@ -35,22 +52,6 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
     public DataSourceFactory<T> attach(Builder<T> builder) {
         this.builder = builder;
         return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final public void setCloudDataSource(T cloudDataSource) {
-        this.cloudDataSource = cloudDataSource;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final public void setLocalDataSource(T localDataSource) {
-        this.localDataSource = localDataSource;
     }
 
     /**
@@ -67,11 +68,11 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
         checkNonNullDataSources();
 
         if (!cache.isExpired()) {
-            dataSourceStrategy = this.localDataSource;
-            dataSourceStrategy.setIsCloudDataSource(false);
+            //noinspection unchecked
+            dataSourceStrategy = (T) this.localDataSource;
         } else {
-            dataSourceStrategy = this.cloudDataSource;
-            dataSourceStrategy.setIsCloudDataSource(true);
+            //noinspection unchecked
+            dataSourceStrategy = (T) this.cloudDataSource;
             dataSourceStrategy.attachCache(cache);
         }
 
@@ -88,9 +89,10 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
     @Override
     final public T createCloudService() {
         checkNonNullCloudDataSources();
-        this.cloudDataSource.setIsCloudDataSource(true);
-        builder.attach(this.cloudDataSource);
-        return this.cloudDataSource;
+        //noinspection unchecked
+        builder.attach((T) this.cloudDataSource);
+        //noinspection unchecked
+        return (T) this.cloudDataSource;
     }
 
     /**
@@ -101,13 +103,14 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
     @Override
     final public T createLocalService() {
         checkNonNullLocalDataSources();
-        this.cloudDataSource.setIsCloudDataSource(false);
-        builder.attach(this.localDataSource);
-        return this.localDataSource;
+        //noinspection unchecked
+        builder.attach((T) this.localDataSource);
+        //noinspection unchecked
+        return (T) this.localDataSource;
     }
 
     /**
-     * Checks for data sources to be set
+     * Checks for Data Sources to be set
      */
     private void checkNonNullDataSources() {
         checkNonNullCloudDataSources();
@@ -115,20 +118,20 @@ public class DataSourceFactoryImpl<T extends DataSourceStrategy> implements Data
     }
 
     /**
-     * Checks for Cloud Data source to be set
+     * Checks for a Cloud Data Source to be set
      */
     private void checkNonNullCloudDataSources() {
-        if(this.cloudDataSource == null) {
-            throw new NullPointerException("Null Cloud DataSource in DataSourceFactory");
+        if (this.cloudDataSource == null) {
+            throw new NullPointerException("Null Cloud DataSource in DataSourceFactoryImpl");
         }
     }
 
     /**
-     * Checks for Local Data source to be set
+     * Checks for a Local Data Source to be set
      */
     private void checkNonNullLocalDataSources() {
-        if(this.localDataSource == null) {
-            throw new NullPointerException("Null Local DataSource in DataSourceFactory");
+        if (this.localDataSource == null) {
+            throw new NullPointerException("Null Local DataSource in DataSourceFactoryImpl");
         }
     }
 }

@@ -26,11 +26,6 @@ import rx.Observable;
 public abstract class DataSourceStrategy {
 
     /**
-     * Determines whether is a Cloud Data Operation
-     */
-    private boolean cloudDataSource;
-
-    /**
      * The current Cache instance attached from your Repository implementation.
      */
     private RepositoryProxyCache cache;
@@ -45,14 +40,14 @@ public abstract class DataSourceStrategy {
     }
 
     /**
-     * Wraps the observable to perform specific strategies.
+     * Delegates the {@link Observable} to perform specific strategies.
      */
-    final public <T> Observable<T> build(Observable<T> observable) {
+    final public <T> Observable<T> delegate(Observable<T> observable) {
         return compose(observable);
     }
 
     /**
-     * Executes a process before to perform the Observable.
+     * Executes a process before to perform the {@link Observable}.
      */
     <T> Observable<T> compose(Observable<T> observable) {
         // no-op by default
@@ -75,19 +70,5 @@ public abstract class DataSourceStrategy {
     @Nullable
     final public RepositoryProxyCache getCache() {
         return cache;
-    }
-
-    /**
-     * Determines whether this DataSource instance is a Cloud based Strategy.
-     */
-    final boolean isCloudDataSource() {
-        return cloudDataSource;
-    }
-
-    /**
-     * Sets if the current DataSource is a Cloud based Strategy.
-     */
-    final void setIsCloudDataSource(boolean cloudDataSource) {
-        this.cloudDataSource = cloudDataSource;
     }
 }

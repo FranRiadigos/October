@@ -1,0 +1,27 @@
+machine:
+  environment:
+    JAVA8_HOME: /usr/lib/jvm/jdk1.8.0
+    GRADLE_OPTS: '-Dorg.gradle.parallel=true -Dorg.gradle.daemon=true -Dorg.gradle.jvmargs="-Xmx1024m -XX:PermSize=1G -XX:MaxPermSize=1G -XX:+HeapDumpOnOutOfMemoryError"'
+
+dependencies:
+  cache_directories:
+    - ~/.android
+
+  pre:
+    - echo y | android update sdk --no-ui --all --filter "tools"
+    - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
+    - echo y | android update sdk --no-ui --all --filter "extra-android-support"
+    - echo y | android update sdk --no-ui --all --filter "platform-tools"
+    - echo y | android update sdk --no-ui --all --filter "android-23"
+    - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.3"
+
+test:
+  override:
+    - echo "Running JUnit tests!"
+    - ./gradlew clean build check test -PdisablePreDex
+
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find ~ -regex ".*/build/outputs" -exec cp -r {} $CIRCLE_ARTIFACTS \;
+    - find ~ -regex ".*/build/reports/*" -exec cp -r {} $CIRCLE_TEST_REPORTS/junit/ \;
+    - find ~ -type f -regex ".*/build/test-results/.*xml" -exec cp -r {} $CIRCLE_TEST_REPORTS/junit/ \;

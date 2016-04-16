@@ -1,1 +1,1 @@
-include ':app', ':october-compiler', ':october-core', ':october'
+include ':october-core', ':october-compiler', ':october', ':examples'

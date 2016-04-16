@@ -6,14 +6,14 @@ import retrofit2.Retrofit;
 import retrofit2.RxJavaCallAdapterFactory;
 
 /**
- * Implementation of an Abstract Retrofit Rest Factory
+ * Abstract Retrofit Rest Factory.
  */
 public abstract class OctoberRetrofitFactory {
 
     private Retrofit retrofit;
     private String apiUrl;
 
-    final protected <S> S create(Class<S> service) {
+    final public <S> S create(Class<S> service) {
         return build().create(service);
     }
 
