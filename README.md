@@ -21,7 +21,8 @@ Android MVP Framework that aims to make easier developers life.
  * Common lifecycle Activity methods are going to delegate on the Presenter.
  */
 @PerActivity // Per activity scope
-public class SamplePresenter extends OctoberPresenter<ISampleView> implements ISamplePresenter<ISampleView> {
+public class SamplePresenter extends OctoberPresenter<ISampleView> 
+    implements ISamplePresenter<ISampleView> {
 
     @Inject
     SampleUseCase sampleUseCase;
@@ -70,7 +71,8 @@ public class SamplePresenter extends OctoberPresenter<ISampleView> implements IS
  * It is only needed to provide the Presenter interface as a parameterized type.
  */
 @ActivityComponent // Automatic Dagger component injection
-public class SampleActivity extends OctoberCompatActivity<ISamplePresenter> implements ISampleView {
+public class SampleActivity extends OctoberCompatActivity<ISamplePresenter> 
+    implements ISampleView {
 
     // October binds Butterknife automatically
     @Bind(R.id.sample_textview) TextView sampleTextView;
