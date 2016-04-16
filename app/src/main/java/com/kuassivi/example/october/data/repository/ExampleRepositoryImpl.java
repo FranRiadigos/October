@@ -1,6 +1,6 @@
-package com.kuassivi.example.data.repository;
+package com.kuassivi.example.october.data.repository;
 
-import com.kuassivi.example.data.repository.datasource.ExampleDataSource;
+import com.kuassivi.example.october.data.repository.datasource.ExampleDataSource;
 import com.kuassivi.october.annotation.PerActivity;
 import com.kuassivi.october.repository.OctoberRepository;
 import com.kuassivi.october.repository.datasource.DataSourceFactory;

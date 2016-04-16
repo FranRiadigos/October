@@ -139,7 +139,7 @@ public class OctoberProcessor extends AbstractProcessor {
                                           + "Might it be inheriting from a generated class?");
         }
 
-        // We can cast it, because we know that it's of ElementKind.CLASS
+        // it's kind of ElementKind.CLASS
         TypeElement typeElement = (TypeElement) applicationElement;
 
         // Validates if inherits from Application

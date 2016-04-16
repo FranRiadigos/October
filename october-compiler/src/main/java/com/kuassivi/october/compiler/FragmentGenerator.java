@@ -103,7 +103,7 @@ public class FragmentGenerator {
             if (!SuperficialValidation.validateElement(annotatedElement)) {
                 continue;
             }
-            // We can cast it, because we know that it's of ElementKind.CLASS
+            // it's kind of ElementKind.CLASS
             TypeElement currentClass = (TypeElement) annotatedElement;
 
             if(Utils.containsTypeParameters(currentClass)) {
@@ -174,7 +174,7 @@ public class FragmentGenerator {
                 if (!SuperficialValidation.validateElement(annotatedElement)) {
                     continue;
                 }
-                // We can cast it, because we know that it's of ElementKind.CLASS
+                // it's kind of ElementKind.CLASS
                 TypeElement currentPresenter = (TypeElement) annotatedElement;
                 TypeElement currentClass = currentPresenter;
                 if(Utils.inheritsFromClass(currentClass, Config.OCTOBER_PRESENTER_CLASS)) {

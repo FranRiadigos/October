@@ -112,6 +112,11 @@ final class AnnotationValidator {
         return this;
     }
 
+    /**
+     * Checks whether an annotated Class inherits from a super Class.
+     *
+     * @return AnnotationValidator
+     */
     AnnotationValidator inheritsFromClass(String superClassName) {
         if (annotatedElement.getKind() == ElementKind.CLASS) {
             TypeElement currentClass = annotatedElement;
@@ -128,10 +133,18 @@ final class AnnotationValidator {
         return this;
     }
 
+    /**
+     * Adds an error into the error {@link Set}.
+     */
     void addError(String msg, Object... args) {
         errors.add(String.format(msg, args));
     }
 
+    /**
+     * Retrieve the current error {@link Set}.
+     *
+     * @return the current error {@link Set}
+     */
     public Set<String> getErrors() {
         return errors;
     }

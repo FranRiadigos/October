@@ -12,7 +12,7 @@ import com.kuassivi.october.mvp.OctoberActivityInterface;
 import com.kuassivi.october.mvp.OctoberFragmentInterface;
 
 /**
- * Component that wraps dependency injection bases.
+ * Component that decorates dependency injection bases.
  */
 public interface OctoberComponent {
 

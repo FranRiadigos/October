@@ -1,4 +1,4 @@
-package com.kuassivi.example.base;
+package com.kuassivi.example.october.base;
 
 import com.kuassivi.october.mvp.OctoberFragment;
 import com.kuassivi.october.mvp.contract.Presentable;
@@ -7,7 +7,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -104,8 +103,7 @@ public abstract class BaseFragment<P extends Presentable> extends OctoberFragmen
             Snackbar snack = buildSnackbar(msg);
             if (snack != null) {
                 snack.getView()
-                     .setBackgroundColor(ContextCompat
-                                                 .getColor(getActivity(), color));
+                     .setBackgroundColor(color);
                 snack.show();
             }
         }

@@ -71,7 +71,7 @@ public interface DataSourceFactory<T> {
         DataSourceFactory<T> getDataSourceFactory();
 
         /**
-         * Builds an Observable using the build method of an inner DataSource Strategy.
+         * Builds an Observable using the delegate method of an inner DataSource Strategy.
          * <p>
          * Allow to compose and apply specific routines on the original observable.
          * <p>

@@ -6,7 +6,7 @@ import retrofit2.Retrofit;
 import retrofit2.RxJavaCallAdapterFactory;
 
 /**
- * Implementation of an Abstract Retrofit Rest Factory
+ * Abstract Retrofit Rest Factory.
  */
 public abstract class OctoberRetrofitFactory {
 

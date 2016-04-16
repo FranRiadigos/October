@@ -8,7 +8,7 @@ import android.util.Log;
 public class MethodLooper {
 
     /**
-     * Prevent overloading the same method!
+     * Prevent and warn when overloading the same method multiple times.
      *
      * @param methodName String of the method name to prevent infinite loop
      */

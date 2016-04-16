@@ -1,9 +1,23 @@
 package com.kuassivi.october;
 
+import com.kuassivi.october.annotation.ApplicationComponent;
+
 import android.app.Application;
 
-import java.lang.reflect.InvocationTargetException;
-
+/**
+ * Main class who initialize the October Framework.
+ * Remember to create before all dependency module files as specified in the web manuals.
+ * <p>
+ * <b>Usage:</b> Add the @{@link ApplicationComponent} annotation on your {@link Application}
+ * class and initialize the October Framework as follow:
+ * <pre>
+ * <code>public void onCreate() {
+ *   super.onCreate();
+ *   October.initialize(this);
+ * }
+ * </code>
+ * </pre>
+ */
 public class October {
 
     private static OctoberComponent component;
@@ -18,11 +32,8 @@ public class October {
             component = initializer.initialize(application);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Something unexpected was happened. "
-                                       + "Please, try again and rebuild your project.");
-        } catch (InvocationTargetException ignored) {
-        } catch (NoSuchMethodException ignored) {
-        } catch (InstantiationException ignored) {
-        } catch (IllegalAccessException ignored) {
+                                       + "Please, rebuild your project and try again.");
+        } catch (Exception ignored) {
         }
     }
 

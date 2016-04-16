@@ -8,32 +8,36 @@ import rx.Observable;
 import rx.functions.Action0;
 
 /**
- * Realm specific Data Source Strategy class that starts and closes a Realm instance in the same
- * Thread and observable is subscribed.
+ * {@link Realm} specific DataSource strategy class that starts and closes a {@link Realm} instance
+ * in the same {@link Thread} when an {@link Observable} is subscribed.
  * <p>
- * It also provides an utility method to create, update and/or clear specific Realm objects
- * synchronously through the {@link #createOrUpdate(Object, Class[])} method.
+ * It also provides an utility method to create, update and/or clear specific {@link Realm} objects
+ * <b>synchronously</b> through the {@link #createOrUpdate(Object, Class[])} method.
+ * <p>
+ * <b>Note:</b> Whenever you inherits from this class and planning to work with the current {@link
+ * Realm} instance, you must {@link #delegate(Observable)} your upstream {@link Observable}.
  */
 abstract class RealmDataSourceStrategy extends DataSourceStrategy {
 
     /**
-     * We cannot Inject Realm with dagger, due to the access thread confinement.
+     * We cannot Inject {@link Realm} with dagger, due to the access thread confinement.
      * <p>
-     * Let {@link #startRealm} to instantiate Realm in each subscription.
+     * Let {@link #startRealm} to instantiate {@link Realm} in each subscription.
      */
     private Realm realm;
 
     /**
-     * Starts the Realm instance when the Observable subscribes.
+     * Starts the {@link Realm} instance when the {@link Observable} subscribes.
      */
     private final Action0 startRealm = () -> {
         if (this.realm == null || this.realm.isClosed()) {
             this.realm = Realm.getDefaultInstance();
+            this.realm.refresh(); // Fix
         }
     };
 
     /**
-     * Closes the Realm instance when the Observable terminates.
+     * Closes the {@link Realm} instance when the {@link Observable} terminates.
      */
     private final Action0 stopRealm = () -> {
         if (this.realm != null && !this.realm.isClosed()) {
@@ -43,7 +47,7 @@ abstract class RealmDataSourceStrategy extends DataSourceStrategy {
     };
 
     /**
-     * Manages the Realm instance.
+     * Manages the {@link Realm} instance.
      * <p>
      * {@inheritDoc}
      */
@@ -63,7 +67,7 @@ abstract class RealmDataSourceStrategy extends DataSourceStrategy {
      * class.
      *
      * @param entity     {@link RealmObject} or {@link io.realm.RealmList}
-     * @param clearFirst Optional {@link RealmObject} to be cleared
+     * @param clearFirst Optional {@link RealmObject}s to be cleared
      * @param <T>        {@link RealmObject} or {@link io.realm.RealmList}
      * @param <B>        {@link RealmObject}
      */
@@ -90,11 +94,11 @@ abstract class RealmDataSourceStrategy extends DataSourceStrategy {
     }
 
     /**
-     * Checks whether is able to clear all entities on the Realm database.
+     * Checks whether is able to clear all entities on the {@link Realm} database.
      *
      * @param entity {@link RealmObject} or {@link io.realm.RealmList}
      * @param <T>    {@link RealmObject} or {@link io.realm.RealmList}
-     * @return true if is able to clear all entities on the Realm database, false otherwise
+     * @return true if is able to clear all entities on the {@link Realm} database, false otherwise
      */
     private <T> boolean isAbleToClear(T entity) {
         return (entity instanceof RealmObject)
@@ -102,7 +106,7 @@ abstract class RealmDataSourceStrategy extends DataSourceStrategy {
     }
 
     /**
-     * Checks whether is a Collection and if it's not empty
+     * Checks whether is a Collection and if it's not empty.
      *
      * @param entity {@link RealmObject} or {@link io.realm.RealmList}
      * @param <T>    {@link RealmObject} or {@link io.realm.RealmList}
@@ -114,9 +118,9 @@ abstract class RealmDataSourceStrategy extends DataSourceStrategy {
     }
 
     /**
-     * Returns the current Realm instance for the current Thread execution.
+     * Returns the current {@link Realm} instance for the current Thread execution.
      *
-     * @return The current Realm instance
+     * @return The current {@link Realm} instance
      */
     final public Realm getRealm() {
         return realm;

@@ -60,7 +60,7 @@ public class ApplicationAnnotatedClass extends DefaultAnnotatedClass {
             || fragmentModuleQualifiedClassName.isEmpty()) {
             throw new IllegalArgumentException(
                     String.format("Some arguments in @%s for class %s are null or empty! "
-                                  + "You must provide application, activity and fragment modules.",
+                                  + "You must provide Application, Activity and Fragment modules.",
                                   ApplicationComponent.class.getSimpleName(),
                                   classElement.getQualifiedName().toString()));
         }

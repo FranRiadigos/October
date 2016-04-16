@@ -95,7 +95,13 @@ public abstract class UseCase<T> {
      * @return The provided Observable.
      */
     final public Observable<T> asObservable() {
-        return provideObservable().compose(buildUseCaseObservable());
+        Observable<T> ob = provideObservable();
+        if (ob == null) {
+            throw new NullPointerException(
+                    String.format("provideObservable() method of %s class returns null.",
+                                  this.getClass().getSimpleName()));
+        }
+        return ob.compose(buildUseCaseObservable());
     }
 
     /**

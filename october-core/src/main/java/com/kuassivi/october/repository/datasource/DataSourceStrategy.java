@@ -40,14 +40,14 @@ public abstract class DataSourceStrategy {
     }
 
     /**
-     * Wraps the observable to perform specific strategies.
+     * Delegates the {@link Observable} to perform specific strategies.
      */
-    final public <T> Observable<T> build(Observable<T> observable) {
+    final public <T> Observable<T> delegate(Observable<T> observable) {
         return compose(observable);
     }
 
     /**
-     * Executes a process before to perform the Observable.
+     * Executes a process before to perform the {@link Observable}.
      */
     <T> Observable<T> compose(Observable<T> observable) {
         // no-op by default

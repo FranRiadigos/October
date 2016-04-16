@@ -1,8 +1,8 @@
-package com.kuassivi.example.di.module;
+package com.kuassivi.example.october.di.module;
 
-import com.kuassivi.example.data.repository.ExampleRepository;
-import com.kuassivi.example.data.repository.ExampleRepositoryImpl;
-import com.kuassivi.example.data.repository.datasource.ExampleRealmCloudDataSource;
+import com.kuassivi.example.october.data.repository.ExampleRepository;
+import com.kuassivi.example.october.data.repository.ExampleRepositoryImpl;
+import com.kuassivi.example.october.data.repository.datasource.ExampleRealmCloudDataSource;
 import com.kuassivi.october.annotation.PerActivity;
 import com.kuassivi.october.di.module.OctoberActivityModule;
 import com.kuassivi.october.repository.datasource.DataSourceFactory;

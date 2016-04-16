@@ -6,9 +6,11 @@
  * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
- * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
+ * or implied. See the License for the specific language governing permissions and limitations
+ * under
  * the License.
  ******************************************************************************/
 
@@ -35,7 +37,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Utility used to navigate through the application for both Activities and Fragments.
+ * Utility for a navigation flow through the application for both Activities and Fragments.
+ * <p>
+ * {@link Navigator} does not finish an Activity, you should do it manual or use custom flags.
  */
 @PerActivity
 public class Navigator {
@@ -43,11 +47,13 @@ public class Navigator {
     /**
      * The current loaded Activity.
      */
+    @NonNull
     private Activity activity;
 
     /**
-     * The current loaded Fragment.
+     * The current loaded Fragment if exists.
      */
+    @Nullable
     private Fragment fragment;
 
     /**
@@ -62,7 +68,7 @@ public class Navigator {
      * @param activity The current loaded Activity.
      */
     @Inject
-    public Navigator(Activity activity) {
+    public Navigator(@NonNull Activity activity) {
         this.activity = activity;
     }
 
@@ -72,7 +78,7 @@ public class Navigator {
      * @param clazz Activity class
      * @param <T>   Activity type
      */
-    public <T extends Activity> void start(Class<T> clazz) {
+    public <T extends Activity> void start(@NonNull Class<T> clazz) {
         start(activity, clazz, -1, null);
     }
 
@@ -83,7 +89,7 @@ public class Navigator {
      * @param flags Activity flags
      * @param <T>   Activity type
      */
-    public <T extends Activity> void start(Class<T> clazz, int flags) {
+    public <T extends Activity> void start(@NonNull Class<T> clazz, int flags) {
         start(activity, clazz, flags, null);
     }
 
@@ -94,7 +100,7 @@ public class Navigator {
      * @param extras Activity Bundle
      * @param <T>    Activity type
      */
-    public <T extends Activity> void start(Class<T> clazz, Bundle extras) {
+    public <T extends Activity> void start(@NonNull Class<T> clazz, Bundle extras) {
         start(activity, clazz, -1, extras);
     }
 
@@ -106,7 +112,7 @@ public class Navigator {
      * @param extras Activity Bundle
      * @param <T>    Activity type
      */
-    public <T extends Activity> void start(Class<T> clazz, int flags, Bundle extras) {
+    public <T extends Activity> void start(@NonNull Class<T> clazz, int flags, Bundle extras) {
         start(activity, clazz, flags, extras);
     }
 
@@ -119,7 +125,8 @@ public class Navigator {
      * @param extras   Activity Bundle
      * @param <T>      Activity type
      */
-    public <T extends Activity> void start(Context activity, Class<T> clazz, int flags,
+    public <T extends Activity> void start(@NonNull Context activity, @NonNull Class<T> clazz,
+                                           int flags,
                                            Bundle extras) {
         if (activity != null) {
             Intent intent = new Intent(activity, clazz);
@@ -166,11 +173,11 @@ public class Navigator {
     }
 
     /**
-     * Replaces a Fragment into the Fragment Container.
+     * Replaces a Fragment from the Fragment Container.
      *
      * @param resourceId id for the fragment container
-     * @param fragment   Fragment to be loaded on the container
-     * @param animate    whether it must to be animated
+     * @param fragment   Fragment to be loaded in the container
+     * @param animate    whether it must be animated
      */
     public void load(@IdRes int resourceId, @NonNull Fragment fragment, boolean animate) {
         FragmentTransaction fragmentTransaction = prepareFragment(resourceId,
@@ -183,10 +190,10 @@ public class Navigator {
     }
 
     /**
-     * Replaces a Fragment into the Fragment Container.
+     * Replaces a Fragment from the Fragment Container.
      *
      * @param resourceId id for the fragment container
-     * @param fragment   Fragment to be loaded on the container
+     * @param fragment   Fragment to be loaded in the container
      */
     public void load(@IdRes int resourceId, @NonNull Fragment fragment) {
         FragmentTransaction fragmentTransaction = prepareFragment(resourceId,
@@ -203,8 +210,8 @@ public class Navigator {
      *
      * @param resourceId     id for the fragment container
      * @param fragment       Fragment to be loaded on the container
-     * @param animate        whether it must to be animated
-     * @param addToBackStack the backStack string
+     * @param animate        whether it must be animated
+     * @param addToBackStack the BackStack string tag
      */
     @Nullable
     private FragmentTransaction prepareFragment(@IdRes int resourceId,
@@ -213,12 +220,12 @@ public class Navigator {
                                                 String addToBackStack) {
 
         if (resourceId <= 0) {
-            throw new RuntimeException("You must supply an ID for the Fragment Container");
+            throw new RuntimeException("You must supply a resource id for the Fragment Container");
         }
 
         if (!(activity instanceof FragmentActivity)) {
             throw new RuntimeException(
-                    "Activity must extends from FragmentActivity or AppCompatActivity");
+                    "The activity must inherits from FragmentActivity or AppCompatActivity");
         }
 
         FragmentActivity fragmentActivity = (FragmentActivity) activity;
@@ -251,8 +258,9 @@ public class Navigator {
     }
 
     /**
-     * Pops back to the specified Fragment class existing in the BackStack <br>It will detach and
-     * destroy forwarded Fragments
+     * Pops back to the specified Fragment class existing in the BackStack.
+     * <p>
+     * It will detach and destroy forwarded Fragments.
      *
      * @param clazz The fragment class
      */
@@ -261,7 +269,7 @@ public class Navigator {
     }
 
     /**
-     * Pops back with some specific fragment arguments <br>
+     * Pops back with some specific fragment arguments.
      *
      * @param clazz          The fragment class
      * @param args           Arguments to update into the Fragment
@@ -269,7 +277,8 @@ public class Navigator {
      */
     public void popToFragment(@NonNull Class<?> clazz, Bundle args, boolean clearArguments) {
         if (!(activity instanceof FragmentActivity)) {
-            throw new RuntimeException("Activity must extend from FragmentActivity");
+            throw new RuntimeException(
+                    "The activity must inherits from FragmentActivity or AppCompatActivity");
         }
 
         FragmentActivity fragmentActivity = (FragmentActivity) activity;
@@ -291,7 +300,7 @@ public class Navigator {
             if (frag.getClass().equals(clazz)) {
                 if (args != null && args.size() > 0 && frag.getArguments() == null) {
                     throw new IllegalArgumentException(
-                            "Your Viewable constructor must call super()");
+                            "Fragment constructor must call super()");
                 }
                 if (frag.getArguments() != null && args != null) {
                     if (clearArguments) {
@@ -307,14 +316,16 @@ public class Navigator {
     }
 
     /**
-     * Pops back to a specific BackStack position <br>It will detach and destroy forwarded
-     * Fragments
+     * Pops back to a specific BackStack position.
+     * <p>
+     * It will detach and destroy forwarded Fragments.
      *
      * @param index index in the back stack entry
      */
     public void popToStack(int index) {
         if (!(activity instanceof FragmentActivity)) {
-            throw new RuntimeException("Activity must extend from FragmentActivity");
+            throw new RuntimeException(
+                    "The activity must inherits from FragmentActivity or AppCompatActivity");
         }
 
         FragmentActivity fragmentActivity = (FragmentActivity) activity;
@@ -344,10 +355,11 @@ public class Navigator {
     }
 
     /**
-     * Return the current attached Fragment to an Activity
+     * Returns the current attached Fragment if it exists.
      *
      * @return the current attached Fragment
      */
+    @Nullable
     public Fragment getFragment() {
         return fragment;
     }

@@ -1,10 +1,7 @@
-package com.kuassivi.example.data.repository;
+package com.kuassivi.example.october.data.repository;
 
 import rx.Observable;
 
-/**
- * Created by fran on 7/4/16.
- */
 public interface ExampleRepository {
 
     Observable<Void> getData();

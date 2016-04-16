@@ -1,4 +1,4 @@
-package com.kuassivi.example.data.services.adapter;
+package com.kuassivi.example.october.data.services.adapter;
 
 import com.kuassivi.october.service.adapter.OctoberRetrofitFactory;
 

@@ -20,6 +20,9 @@ import java.util.Set;
 
 import javax.lang.model.element.Element;
 
+/**
+ * @author Francisco Gonzalez-Armijo
+ */
 public class ValidationException extends Exception {
 
     Set<String> messages;

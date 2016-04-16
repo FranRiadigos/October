@@ -48,6 +48,6 @@ public abstract class OctoberRepository<T> implements DataSourceFactory.Builder<
      */
     @Override
     final public <E> Observable<E> build(Observable<E> observable) {
-        return ((DataSourceStrategy) this.dataSourceStrategy).build(observable);
+        return ((DataSourceStrategy) this.dataSourceStrategy).delegate(observable);
     }
 }

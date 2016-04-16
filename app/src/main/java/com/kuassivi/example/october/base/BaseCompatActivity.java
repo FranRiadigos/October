@@ -1,6 +1,6 @@
-package com.kuassivi.example.base;
+package com.kuassivi.example.october.base;
 
-import com.kuassivi.october.mvp.OctoberActivity;
+import com.kuassivi.october.mvp.OctoberCompatActivity;
 import com.kuassivi.october.mvp.contract.Presentable;
 
 import android.content.Context;
@@ -11,8 +11,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-
-public class BaseActivity<P extends Presentable> extends OctoberActivity<P> {
+public class BaseCompatActivity<P extends Presentable> extends OctoberCompatActivity<P> {
 
     /**
      * {@inheritDoc}
@@ -87,8 +86,7 @@ public class BaseActivity<P extends Presentable> extends OctoberActivity<P> {
             Snackbar snack = buildSnackbar(msg);
             if (snack != null) {
                 snack.getView()
-                     .setBackgroundColor(/*ContextCompat
-                                                 .getColor(this, */color/*)*/);
+                     .setBackgroundColor(color);
                 snack.show();
             }
         }

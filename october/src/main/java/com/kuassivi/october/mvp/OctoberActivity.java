@@ -8,8 +8,8 @@ import com.kuassivi.october.di.module.BaseActivityModule;
 import com.kuassivi.october.mvp.contract.Presentable;
 import com.kuassivi.october.mvp.contract.Viewable;
 import com.kuassivi.october.util.MethodLooper;
+import com.trello.rxlifecycle.components.RxActivity;
 
-import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
@@ -33,7 +33,7 @@ import dagger.Lazy;
  *
  * @param <P> The Presenter interface reference
  */
-public abstract class OctoberActivity<P extends Presentable> extends Activity
+public abstract class OctoberActivity<P extends Presentable> extends RxActivity
         implements Viewable, Presentable.OnAttachListener<P>, OctoberActivityInterface {
 
     /**

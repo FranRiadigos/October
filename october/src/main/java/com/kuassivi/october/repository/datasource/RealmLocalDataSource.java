@@ -1,6 +1,8 @@
 package com.kuassivi.october.repository.datasource;
 
+import io.realm.Realm;
+
 /**
- * Realm specific Data Source Strategy for Local operations.
+ * {@link Realm} specific DataSource decorator for Local operations.
  */
 public class RealmLocalDataSource extends RealmDataSourceStrategy implements ILocalDataSource {}

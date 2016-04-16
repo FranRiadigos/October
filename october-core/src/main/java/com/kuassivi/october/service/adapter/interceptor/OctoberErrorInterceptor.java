@@ -1,5 +1,6 @@
 package com.kuassivi.october.service.adapter.interceptor;
 
+import com.kuassivi.october.service.adapter.OctoberRetrofitFactory;
 import com.kuassivi.october.service.exception.OctoberErrorHandler;
 
 import java.io.IOException;
@@ -7,6 +8,9 @@ import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
+/**
+ * Used in conjunction with {@link OctoberRetrofitFactory} and {@link OctoberErrorHandler}.
+ */
 public class OctoberErrorInterceptor implements Interceptor {
 
     OctoberErrorHandler errorHandler;
@@ -20,8 +24,9 @@ public class OctoberErrorInterceptor implements Interceptor {
         Response response = chain.proceed(chain.request());
 
         IOException exception = errorHandler.handleError(response);
-        if (exception != null)
+        if (exception != null) {
             throw exception;
+        }
 
         return response;
     }

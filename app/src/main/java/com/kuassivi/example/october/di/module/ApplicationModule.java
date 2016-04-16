@@ -1,4 +1,4 @@
-package com.kuassivi.example.di.module;
+package com.kuassivi.example.october.di.module;
 
 import com.kuassivi.october.di.module.OctoberApplicationModule;
 import com.kuassivi.october.executor.ObserverThread;

@@ -1,8 +1,8 @@
-package com.kuassivi.example;
+package com.kuassivi.example.october;
 
-import com.kuassivi.example.di.module.ActivityModule;
-import com.kuassivi.example.di.module.ApplicationModule;
-import com.kuassivi.example.di.module.FragmentModule;
+import com.kuassivi.example.october.di.module.ActivityModule;
+import com.kuassivi.example.october.di.module.ApplicationModule;
+import com.kuassivi.example.october.di.module.FragmentModule;
 import com.kuassivi.october.October;
 import com.kuassivi.october.annotation.ApplicationComponent;
 

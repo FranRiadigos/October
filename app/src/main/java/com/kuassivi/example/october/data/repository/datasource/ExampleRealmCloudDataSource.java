@@ -1,6 +1,6 @@
-package com.kuassivi.example.data.repository.datasource;
+package com.kuassivi.example.october.data.repository.datasource;
 
-import com.kuassivi.example.data.services.adapter.RetrofitFactory;
+import com.kuassivi.example.october.data.services.adapter.RetrofitFactory;
 import com.kuassivi.october.annotation.PerActivity;
 import com.kuassivi.october.repository.datasource.RealmCloudDataSource;
 
