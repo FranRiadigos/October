@@ -30,10 +30,10 @@ Android MVP Framework that aims to make easier developers life.
 
 ```java
 /**
- * Presenters are going to respect the Android lifecycle and convention methods.
- * Common lifecycle Activity methods are going to delegate on the Presenter.
+ * Presenters respect the Android lifecycle and convention methods.
+ * Common lifecycle Activity methods are going to be delegated on the Presenter by October.
  */
-@PerActivity // Per activity scope
+@PerActivity // Per Activity scope
 public class SamplePresenter extends OctoberPresenter<ISampleView> 
     implements ISamplePresenter<ISampleView> {
 
@@ -67,7 +67,7 @@ public class SamplePresenter extends OctoberPresenter<ISampleView>
         @Override
         public void onError(OctoberException e) {
             e.printStackTrace();
-            getView().showError(e.getMessage());
+            getView().showError(e.getCause().getMessage());
         }
     
         @Override
