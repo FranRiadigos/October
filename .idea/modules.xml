@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/October.iml" filepath="$PROJECT_DIR$/October.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/examples/app.iml" filepath="$PROJECT_DIR$/examples/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/october/october.iml" filepath="$PROJECT_DIR$/october/october.iml" />
       <module fileurl="file://$PROJECT_DIR$/october-compiler/october-compiler.iml" filepath="$PROJECT_DIR$/october-compiler/october-compiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/october-core/october-core.iml" filepath="$PROJECT_DIR$/october-core/october-core.iml" />
