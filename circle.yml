@@ -1,5 +1,6 @@
 machine:
   environment:
+    JAVA8_HOME: /usr/lib/jvm/jdk1.8.0
     GRADLE_OPTS: '-Dorg.gradle.parallel=true -Dorg.gradle.daemon=true -Dorg.gradle.jvmargs="-Xmx1024m -XX:PermSize=1G -XX:MaxPermSize=1G -XX:+HeapDumpOnOutOfMemoryError"'
 
 dependencies:
