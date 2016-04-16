@@ -135,8 +135,7 @@ public class ApplicationGenerator {
                           .returns(OctoberComponent.class);
 
         initialize.addStatement("final $T component = $T.builder()\n"
-                                + "$>.$L(new $T(application))\n"
-                                + ".$L(new $T()).build()$<",
+                                + "$>.$L(new $T(application)).build()$<",
                                 ClassName.get(pkg_di_component,
                                               Config.APPLICATION_COMPONENT),
                                 ClassName.get(pkg_di_component,
@@ -144,13 +143,7 @@ public class ApplicationGenerator {
                                               + Config.APPLICATION_COMPONENT),
                                 StringUtils.uncapitalize(BaseApplicationModule
                                                                  .class.getSimpleName()),
-                                ClassName.get(BaseApplicationModule.class),
-                                StringUtils.uncapitalize(
-                                        applicationAnnotatedClass
-                                                .getApplicationModuleSimpleTypeName()),
-                                ClassName.bestGuess(
-                                        applicationAnnotatedClass
-                                                .getApplicationModuleQualifiedClassName()));
+                                ClassName.get(BaseApplicationModule.class));
 
         initialize.addStatement("component.$L(application)", Config.COMPONENT_INJECTOR_METHOD);
 
@@ -198,6 +191,7 @@ public class ApplicationGenerator {
                            + "$>return component;\n"
                            + "$<}\n"
                            + "\n"
+                           + "@SuppressWarnings(\"unchecked\")\n"
                            + "@Override\n"
                            + "public $T get$L() {\n"
                            + "$>return component.$L();\n"
@@ -223,11 +217,13 @@ public class ApplicationGenerator {
                            + "$>fComponent = get$L().$L().$L(m);\n"
                            + "$<}\n"
                            + "\n"
+                           + "@SuppressWarnings(\"unchecked\")\n"
                            + "@Override\n"
                            + "public $T get$L() {\n"
                            + "$>return aComponent;\n"
                            + "$<}\n"
                            + "\n"
+                           + "@SuppressWarnings(\"unchecked\")\n"
                            + "@Override\n"
                            + "public $T get$L() {\n"
                            + "$>return fComponent;\n"

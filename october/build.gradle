@@ -1,12 +1,9 @@
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
         mavenLocal()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
         classpath 'me.tatarka:gradle-retrolambda:3.2.3'
     }
 }
@@ -55,7 +52,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':october-core')
     compile(
             "com.android.support:support-v4:23.3.0",
@@ -98,7 +94,7 @@ ext {
 
     mavenPackagin = "aar"
 
-    syncMaven = false
+    syncMaven = true
 }
 
 if(localPropExists) {

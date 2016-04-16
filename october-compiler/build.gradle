@@ -1,15 +1,3 @@
-buildscript {
-    repositories {
-        jcenter()
-        mavenCentral()
-        mavenLocal()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
-    }
-}
-
 apply plugin: 'java'
 
 // This is important even if Android Studio claims it isn't
@@ -54,7 +42,7 @@ ext {
 
     mavenPackagin = "pom"
 
-    syncMaven = false
+    syncMaven = true
 }
 
 if(localPropExists) {

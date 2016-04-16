@@ -26,7 +26,7 @@ public interface Presentable<V extends Viewable> {
     /**
      * Every Presentable must implement onCreate state.
      * <p>
-     * <b><font color="red">Caution:</font></b>
+     * <b><font style="color:red">Caution:</font></b>
      * There is no View reference yet!
      */
     void onCreate();
@@ -34,7 +34,7 @@ public interface Presentable<V extends Viewable> {
     /**
      * Every Presentable must implement onViewCreated state.
      * <p>
-     * <b><font color="green">Notice:</font></b>
+     * <b><font style="color:green">Notice:</font></b>
      * View reference has been attached.
      */
     void onViewCreated();

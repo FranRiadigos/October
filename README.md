@@ -1,6 +1,5 @@
 # October [![Circle CI](https://circleci.com/gh/kuassivi/October/tree/master.svg?style=svg)](https://circleci.com/gh/kuassivi/October/tree/master)
-[![Apache 2.0](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) 
-[![Android](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
+[![Apache 2.0](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Android](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
 
 Android MVP Framework that aims to make easier developers life.
 
@@ -11,6 +10,20 @@ Android MVP Framework that aims to make easier developers life.
   - Fast and automatic dependency injection using Dagger 2.
   - Provides some Repository Strategy sources.
   - Error handling interface for latest Retrofit version.
+  
+## Wiki
+
+> Coming soon!
+
+  - Getting started
+  - Working with Fragments
+  - UseCases, Repository and Cache
+  - Working with Retrofit
+  - Handling Exceptions
+  - Providing objects with October Scopes (Dagger)
+  - Dealing with Realm
+  - Unit Testing
+  - Espresso Testing
 
   
 ## Show me the code:
@@ -100,9 +113,7 @@ public class SampleActivity extends OctoberCompatActivity<ISamplePresenter>
 ## Dependency
 
 Latest stable version: 
-[![Latest Version](https://api.bintray.com/packages/kuassivi/maven/october/images/download.svg) ](https://bintray.com/kuassivi/maven/october/_latestVersion)
-[![Bintray Version](https://img.shields.io/bintray/v/kuassivi/maven/october.svg)](http://jcenter.bintray.com/com/kuassivi/october/october/)
-[![Maven Central](https://img.shields.io/maven-central/v/com.kuassivi.october/october.svg)]()
+[![Latest Version](https://api.bintray.com/packages/kuassivi/maven/october/images/download.svg) ](https://bintray.com/kuassivi/maven/october/_latestVersion) [![Bintray Version](https://img.shields.io/bintray/v/kuassivi/maven/october.svg)](http://jcenter.bintray.com/com/kuassivi/october/october/) [![Maven Central](https://img.shields.io/maven-central/v/com.kuassivi.october/october.svg)]()
 
 In order to work with Dagger 2 and benefits from automatic dependency injection of October, 
 you need to apply the [android-apt] gradle plugin to run annotation processing.

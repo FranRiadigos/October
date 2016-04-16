@@ -29,20 +29,26 @@ abstract class RealmDataSourceStrategy extends DataSourceStrategy {
     /**
      * Starts the {@link Realm} instance when the {@link Observable} subscribes.
      */
-    private final Action0 startRealm = () -> {
-        if (this.realm == null || this.realm.isClosed()) {
-            this.realm = Realm.getDefaultInstance();
-            this.realm.refresh(); // Fix
+    private final Action0 startRealm = new Action0() {
+        @Override
+        public void call() {
+            if (realm == null || realm.isClosed()) {
+                realm = Realm.getDefaultInstance();
+                realm.refresh(); // Fix
+            }
         }
     };
 
     /**
      * Closes the {@link Realm} instance when the {@link Observable} terminates.
      */
-    private final Action0 stopRealm = () -> {
-        if (this.realm != null && !this.realm.isClosed()) {
-            this.realm.close();
-            this.realm = null;
+    private final Action0 stopRealm = new Action0() {
+        @Override
+        public void call() {
+            if (realm != null && !realm.isClosed()) {
+                realm.close();
+                realm = null;
+            }
         }
     };
 
@@ -53,10 +59,14 @@ abstract class RealmDataSourceStrategy extends DataSourceStrategy {
      */
     @Override
     <T> Observable<T> compose(Observable<T> observable) {
-        return observable.compose(
-                observable1 -> observable1
+        return observable.compose(new Observable.Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> tObservable) {
+                return tObservable
                         .doOnSubscribe(startRealm)
-                        .doOnTerminate(stopRealm));
+                        .doOnTerminate(stopRealm);
+            }
+        });
     }
 
     /**
@@ -76,18 +86,21 @@ abstract class RealmDataSourceStrategy extends DataSourceStrategy {
                                                                 Class<B>... clearFirst) {
         if (entity != null) {
             this.realm.executeTransaction(
-                    realmInstance -> {
-                        if (clearFirst != null
-                            && clearFirst.length > 0
-                            && isAbleToClear(entity)) {
-                            for (Class<B> clazz : clearFirst) {
-                                realmInstance.clear(clazz);
+                    new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realmInstance) {
+                            if (clearFirst != null
+                                && clearFirst.length > 0
+                                && RealmDataSourceStrategy.this.isAbleToClear(entity)) {
+                                for (Class<B> clazz : clearFirst) {
+                                    realmInstance.clear(clazz);
+                                }
                             }
-                        }
-                        if (entity instanceof RealmObject) {
-                            realmInstance.copyToRealmOrUpdate((RealmObject) entity);
-                        } else if (hasCollectionItems(entity)) {
-                            realmInstance.copyToRealmOrUpdate((Collection) entity);
+                            if (entity instanceof RealmObject) {
+                                realmInstance.copyToRealmOrUpdate((RealmObject) entity);
+                            } else if (RealmDataSourceStrategy.this.hasCollectionItems(entity)) {
+                                realmInstance.copyToRealmOrUpdate((Collection) entity);
+                            }
                         }
                     });
         }
