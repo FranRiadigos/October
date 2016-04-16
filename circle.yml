@@ -8,7 +8,7 @@ dependencies:
 
   pre:
     - echo y | android update sdk --no-ui --all --filter "tools"
-    - echo y | android update sdk --no-ui --all --filter "licenses"
+    - echo y | android update sdk --no-ui --all --filter "license"
     - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
     - echo y | android update sdk --no-ui --all --filter "extra-android-support"
     - echo y | android update sdk --no-ui --all --filter "platform-tools"
