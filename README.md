@@ -1,7 +1,7 @@
 # October [![Circle CI](https://circleci.com/gh/kuassivi/October/tree/master.svg?style=svg)](https://circleci.com/gh/kuassivi/October/tree/master)
 [![Apache 2.0](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Android](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
 
-Android MVP Framework that aims to make easier developers life.
+Android Framework that aims to provide a quick way to implement Clean Architecture.
 
 
 **Some features:**
@@ -13,9 +13,7 @@ Android MVP Framework that aims to make easier developers life.
   
 ## Wiki
 
-> Coming soon!
-
-  - Getting started
+  - [Getting started](https://github.com/kuassivi/October/wiki/Getting-Started)
   - Working with Fragments
   - UseCases, Repository and Cache
   - Working with Retrofit
@@ -132,32 +130,16 @@ buildscript {
 apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies{
-    compile 'com.kuassivi.october:october:?.?.?'
-    apt 'com.kuassivi.october:october-cache-compiler:?.?.?'
+    compile 'com.kuassivi.october:october:x.y.z'
+    apt 'com.kuassivi.october:october-compiler:x.y.z'
 }
 ```
 
-If you are working with maven, do it into your pom.xml
-```xml
-<dependency>
-    <groupId>com.kuassivi.october</groupId>
-    <artifactId>october</artifactId>
-    <version>?.?.?</version>
-    <type>pom</type>
-</dependency>
-<dependency>
-    <groupId>com.kuassivi.october</groupId>
-    <artifactId>october-compiler</artifactId>
-    <version>?.?.?</version>
-    <type>pom</type>
-</dependency>
-```
-
-If you are following any Clean Architecture design or you just need to access October features from a Java module, 
+If you are following your own Clean Architecture design or you just need to access October features from a Java module, 
 use the following dependency in your gradle java module:
 ```groovy
 dependencies{
-    compile 'com.kuassivi.october:october-core:?.?.?'
+    compile 'com.kuassivi.october:october-core:x.y.z'
 }
 ```
 
